@@ -7,6 +7,12 @@ export interface ILectura extends Document {
     data: number
 };
 
+export interface ILecturaInput {
+    path: string,
+    refContador: any,
+    data: number
+};
+
 
 let LecturaSchema: Schema = new Schema({
     path: String,

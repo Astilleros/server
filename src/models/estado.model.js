@@ -6,6 +6,9 @@ let EstadoSchema = new mongoose_1.Schema({
     reboot: Boolean,
     batery: Number,
     signal: Number,
+    presion: Number,
+    temperatura: Number,
+    humedad: Number,
     refPulpo: {
         type: mongoose_1.Types.ObjectId,
         ref: 'Pulpo'

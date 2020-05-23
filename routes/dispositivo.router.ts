@@ -1,9 +1,8 @@
-import express from 'express';
+import { Router } from 'express';
 import multer from 'multer';
 
-import LecturaController from "../controllers/dispositivo.controller"
+import DispositivoController from "../controllers/dispositivo.controller";
 
-import mongoose from 'mongoose';
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -18,14 +17,14 @@ var upload = multer({ storage: storage });
 
 
 
-var router = express.Router();
+var router = Router();
 
 
 // SHOW ID
-router.get('/:id', async function (req, res, next) {
+router.get('/utc/', async function (req, res, next) {
 
     try {
-        let lectura = await LecturaController.ShowLectura(req.params.id);
+        let lectura = await DispositivoController.timeUTC();
         if(lectura == null) res.status(404).send();
         else res.send(lectura);
     }
@@ -35,53 +34,34 @@ router.get('/:id', async function (req, res, next) {
 
 });
 
-// CREATE
-router.post('/', async function (req, res, next) {
+// CREATE ESTADO
 
+
+router.post('/estado/', async function (req, res, next) {
     try {
-        let lectura = await LecturaController.CreateLectura(req.body);
-        res.send(lectura);
+        let objIEstado : IEstado = new Estado()
+        await DispositivoController.saveEstado({
+            refPulpo: req.body.id,
+            reboot: req.body.reboot,
+            batery: req.body.batery,
+            signal: req.body.signal,
+            presion: req.body.presion,
+            temperatura: req.body.temperatura,
+            humedad: req.body.humedad
+        });
     }
-    catch ( e ) {
-        res.status(400).send(e);
-    }
-
-});
-
-
-//UPDATE
-router.put('/:id', async function (req, res, next) {
-
-    try {
-        let lectura = await LecturaController.UpdateLectura({ _id: req.params.id }, req.body);
-        if(lectura == null) res.status(404).send();
-        else res.send(lectura);
-    } 
     catch ( e ) {
         res.status(400).send(e);
     }
 });
 
 
-
-// DELETE
-router.delete('/:id', async function (req, res, next) {
-
-    try {
-        let lectura = await LecturaController.DeleteLectura(req.params.id);
-        if(lectura == null) res.status(404).send();
-        else res.send(lectura);
-    }
-    catch ( e ) {
-        res.status(400).send(e);
-    }
-});
 
 // RUTA PARA EL PULPO CON MULTI-PART Y MULTER
-router.post('/:refContador', upload.single('photo'), async function (req, res, next) {
+router.post('/lectura/:refContador', upload.single('photo'), async function (req, res, next) {
 
     try {
-        let lectura = await LecturaController.CreateLectura({
+        let lectura = await DispositivoController.saveLectura({
             path: req.file.destination + req.file.filename,
             refContador: req.body.refContador,
             data: -1

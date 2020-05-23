@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
+const estado_model_1 = __importDefault(require("./estado.model"));
 const valvula_model_1 = __importDefault(require("./valvula.model"));
 const manometro_model_1 = __importDefault(require("./manometro.model"));
 const contador_model_1 = __importDefault(require("./contador.model"));
@@ -22,44 +23,26 @@ let PulpoSchema = new mongoose_1.Schema({
     name: String,
     user: String,
     password: String,
-    contadores: [{
-            type: mongoose_1.Types.ObjectId,
-            ref: 'Contador'
-        }],
-    manometros: [{
-            type: mongoose_1.Types.ObjectId,
-            ref: 'Manometro'
-        }],
-    valvulas: [{
-            type: mongoose_1.Types.ObjectId,
-            ref: 'Valvula'
-        }],
-    programaciones: [{
-            type: mongoose_1.Types.ObjectId,
-            ref: 'Programacion'
-        }]
+    contadores: [contador_model_1.default],
+    manometros: [manometro_model_1.default],
+    valvulas: [valvula_model_1.default],
+    programaciones: [programacion_model_1.default]
 }, {
     timestamps: true,
     autoIndex: true,
 });
 //Middlewares mongoose
-PulpoSchema.pre('deleteOne', { query: false, document: true }, function () {
+PulpoSchema.pre('deleteOne', true, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const objToDel = this;
-        yield contador_model_1.default.deleteMany({ _id: objToDel.contadores });
-        yield manometro_model_1.default.deleteMany({ _id: objToDel.manometros });
-        yield valvula_model_1.default.deleteMany({ _id: objToDel.valvulas });
-        yield programacion_model_1.default.deleteMany({ _id: objToDel.programaciones });
+        yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });
     });
 });
-PulpoSchema.pre('deleteOne', { query: true, document: false }, function () {
+PulpoSchema.pre('deleteOne', false, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const filtro = this.getFilter();
         const objToDel = yield this.model.findOne(filtro);
-        yield contador_model_1.default.deleteMany({ _id: objToDel.contadores });
-        yield manometro_model_1.default.deleteMany({ _id: objToDel.manometros });
-        yield valvula_model_1.default.deleteMany({ _id: objToDel.valvulas });
-        yield programacion_model_1.default.deleteMany({ _id: objToDel.programaciones });
+        yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });
     });
 });
 PulpoSchema.pre('deleteMany', function () {
@@ -67,12 +50,8 @@ PulpoSchema.pre('deleteMany', function () {
         const filtro = this.getFilter();
         const arrObjToDel = yield this.model.find(filtro);
         for (let objToDel of arrObjToDel) {
-            yield contador_model_1.default.deleteMany({ _id: objToDel.contadores });
-            yield manometro_model_1.default.deleteMany({ _id: objToDel.manometros });
-            yield valvula_model_1.default.deleteMany({ _id: objToDel.valvulas });
-            yield programacion_model_1.default.deleteMany({ _id: objToDel.programaciones });
+            yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });
         }
     });
 });
-let Pulpo = new mongoose_1.model('Pulpo', PulpoSchema);
-exports.default = Pulpo;
+exports.default = mongoose_1.model('Pulpo', PulpoSchema);

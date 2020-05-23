@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
+const express_1 = require("express");
 const multer_1 = __importDefault(require("multer"));
 const dispositivo_controller_1 = __importDefault(require("../controllers/dispositivo.controller"));
 var storage = multer_1.default.diskStorage({
@@ -24,12 +24,12 @@ var storage = multer_1.default.diskStorage({
     }
 });
 var upload = multer_1.default({ storage: storage });
-var router = express_1.default.Router();
+var router = express_1.Router();
 // SHOW ID
-router.get('/:id', function (req, res, next) {
+router.get('/utc/', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let lectura = yield dispositivo_controller_1.default.ShowLectura(req.params.id);
+            let lectura = yield dispositivo_controller_1.default.timeUTC();
             if (lectura == null)
                 res.status(404).send();
             else
@@ -40,42 +40,19 @@ router.get('/:id', function (req, res, next) {
         }
     });
 });
-// CREATE
-router.post('/', function (req, res, next) {
+// CREATE ESTADO
+router.post('/estado/', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let lectura = yield dispositivo_controller_1.default.CreateLectura(req.body);
-            res.send(lectura);
-        }
-        catch (e) {
-            res.status(400).send(e);
-        }
-    });
-});
-//UPDATE
-router.put('/:id', function (req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let lectura = yield dispositivo_controller_1.default.UpdateLectura({ _id: req.params.id }, req.body);
-            if (lectura == null)
-                res.status(404).send();
-            else
-                res.send(lectura);
-        }
-        catch (e) {
-            res.status(400).send(e);
-        }
-    });
-});
-// DELETE
-router.delete('/:id', function (req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let lectura = yield dispositivo_controller_1.default.DeleteLectura(req.params.id);
-            if (lectura == null)
-                res.status(404).send();
-            else
-                res.send(lectura);
+            yield dispositivo_controller_1.default.saveEstado({
+                refPulpo: req.body.id,
+                reboot: req.body.reboot,
+                batery: req.body.batery,
+                signal: req.body.signal,
+                presion: req.body.presion,
+                temperatura: req.body.temperatura,
+                humedad: req.body.humedad
+            });
         }
         catch (e) {
             res.status(400).send(e);
@@ -83,10 +60,10 @@ router.delete('/:id', function (req, res, next) {
     });
 });
 // RUTA PARA EL PULPO CON MULTI-PART Y MULTER
-router.post('/:refContador', upload.single('photo'), function (req, res, next) {
+router.post('/lectura/:refContador', upload.single('photo'), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let lectura = yield dispositivo_controller_1.default.CreateLectura({
+            let lectura = yield dispositivo_controller_1.default.saveLectura({
                 path: req.file.destination + req.file.filename,
                 refContador: req.body.refContador,
                 data: -1

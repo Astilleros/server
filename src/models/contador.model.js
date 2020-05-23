@@ -22,17 +22,17 @@ let ContadorSchema = new mongoose_1.Schema({
     autoIndex: true,
 });
 //Middlewares mongoose
-ContadorSchema.pre('deleteOne', { query: false, document: true }, function () {
+ContadorSchema.pre('deleteOne', true, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const objToDel = this;
-        yield lectura_model_1.default.deleteMany({ contador_id: objToDel._id });
+        yield lectura_model_1.default.deleteMany({ refContador: objToDel._id });
     });
 });
-ContadorSchema.pre('deleteOne', { query: true, document: false }, function () {
+ContadorSchema.pre('deleteOne', false, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const filtro = this.getFilter();
         const objToDel = yield this.model.findOne(filtro);
-        yield lectura_model_1.default.deleteMany({ contador_id: objToDel._id });
+        yield lectura_model_1.default.deleteMany({ refContador: objToDel._id });
     });
 });
 ContadorSchema.pre('deleteMany', function () {
@@ -40,7 +40,7 @@ ContadorSchema.pre('deleteMany', function () {
         const filtro = this.getFilter();
         const arrObjToDel = yield this.model.find(filtro);
         for (let objToDel of arrObjToDel) {
-            yield lectura_model_1.default.deleteMany({ contador_id: objToDel._id });
+            yield lectura_model_1.default.deleteMany({ refContador: objToDel._id });
         }
     });
 });

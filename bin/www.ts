@@ -75,7 +75,7 @@ function onError(error: any) {
  */
 
 function onListening() {
-  var addr = server.address();
+  var addr : any = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
