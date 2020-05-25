@@ -1,4 +1,4 @@
-import { Schema, Document, model, Query } from 'mongoose';
+import { Schema, Document, model, Query, Model } from 'mongoose';
 import Lectura, { ILectura }  from './lectura.model';
 
 
@@ -6,8 +6,12 @@ export interface IContador extends Document {
     name: string
 };
 
+export interface IContadorInput {
+    name: string
+};
 
-let ContadorSchema: Schema = new Schema({
+
+let objSchema: Schema<IContador> = new Schema<IContador>({
     name: String
 },{
     timestamps: true,
@@ -16,25 +20,29 @@ let ContadorSchema: Schema = new Schema({
 
 
 //Middlewares mongoose
-ContadorSchema.pre<any>('deleteOne',true,  async function() {
+objSchema.pre<IContador>('deleteOne',true,  async function() {
     const objToDel = this;
-    await Lectura.deleteMany({ refContador: objToDel._id });
+    await Lectura.objModel.deleteMany({ refContador: objToDel._id });
 });
 
-ContadorSchema.pre<any>('deleteOne', false, async function() {
-	const filtro = this.getFilter();
+objSchema.pre< Query<IContador> | any >('deleteOne', false, async function() {
+	const filtro = this.getQuery();
 	const objToDel = await this.model.findOne(filtro);
-	await Lectura.deleteMany({ refContador: objToDel._id });
+	await Lectura.objModel.deleteMany({ refContador: objToDel._id });
 });
 
-ContadorSchema.pre<any>('deleteMany', async function() {
-	const filtro = this.getFilter();
+objSchema.pre< Query<IContador> | any >('deleteMany', async function() {
+	const filtro = this.getQuery();
 	const arrObjToDel = await this.model.find(filtro);
 	for(let objToDel of arrObjToDel){
-	    await Lectura.deleteMany({ refContador: objToDel._id });
+	    await Lectura.objModel.deleteMany({ refContador: objToDel._id });
 	}
 });
 
+let objModel : Model<IContador> = model<IContador>('Contador', objSchema);
 
-export default model<IContador>('Contador', ContadorSchema);
+export default {
+	objModel,
+	objSchema
+}
 

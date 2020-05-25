@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 ;
 ;
-let LecturaSchema = new mongoose_1.Schema({
+let objSchema = new mongoose_1.Schema({
     path: String,
     refContador: {
-        type: mongoose_1.Types.ObjectId,
+        type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Contador'
     },
     data: Number
@@ -14,4 +14,8 @@ let LecturaSchema = new mongoose_1.Schema({
     timestamps: true,
     autoIndex: true,
 });
-exports.default = mongoose_1.model('Lectura', LecturaSchema);
+let objModel = mongoose_1.model('Lectura', objSchema);
+exports.default = {
+    objModel,
+    objSchema
+};

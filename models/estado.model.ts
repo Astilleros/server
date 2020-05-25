@@ -1,4 +1,5 @@
-import { Schema, Document, model, Types } from 'mongoose';
+import { Schema, Document, model, Types, Model } from 'mongoose';
+import { IPulpo } from '../models/pulpo.model'
 
 
 export interface IEstado extends Document {
@@ -8,7 +9,7 @@ export interface IEstado extends Document {
     presion: number,
     temperatura: number,
     humedad: number,
-    refPulpo: any
+    refPulpo: IPulpo['_id']
 };
 
 export interface IEstadoInput {
@@ -18,11 +19,11 @@ export interface IEstadoInput {
     presion: number,
     temperatura: number,
     humedad: number,
-    refPulpo: any
+    refPulpo: IPulpo['_id']
 };
 
 
-let EstadoSchema: Schema = new Schema({
+let objSchema: Schema<IEstado> = new Schema<IEstado>({
     reboot: Boolean,
     batery: Number,
     signal: Number,
@@ -30,7 +31,7 @@ let EstadoSchema: Schema = new Schema({
     temperatura: Number,
     humedad: Number,
     refPulpo: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Pulpo'
     }
 },{
@@ -39,4 +40,11 @@ let EstadoSchema: Schema = new Schema({
 });
 
 
-export default model<IEstado>('Estado', EstadoSchema);
+
+let objModel : Model<IEstado> = model<IEstado>('Estado', objSchema);
+
+
+export default {
+   objModel,
+   objSchema
+}

@@ -19,40 +19,44 @@ const manometro_model_1 = __importDefault(require("./manometro.model"));
 const contador_model_1 = __importDefault(require("./contador.model"));
 const programacion_model_1 = __importDefault(require("./programacion.model"));
 ;
-let PulpoSchema = new mongoose_1.Schema({
+let objSchema = new mongoose_1.Schema({
     name: String,
     user: String,
     password: String,
-    contadores: [contador_model_1.default],
-    manometros: [manometro_model_1.default],
-    valvulas: [valvula_model_1.default],
-    programaciones: [programacion_model_1.default]
+    contadores: [contador_model_1.default.objSchema],
+    manometros: [manometro_model_1.default.objSchema],
+    valvulas: [valvula_model_1.default.objSchema],
+    programaciones: [programacion_model_1.default.objSchema]
 }, {
     timestamps: true,
     autoIndex: true,
 });
 //Middlewares mongoose
-PulpoSchema.pre('deleteOne', true, function () {
+objSchema.pre('deleteOne', true, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const objToDel = this;
-        yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });
+        yield estado_model_1.default.objModel.deleteMany({ refPulpo: objToDel._id });
     });
 });
-PulpoSchema.pre('deleteOne', false, function () {
+objSchema.pre('deleteOne', false, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const filtro = this.getQuery();
         const modelo = this.model;
         const objToDel = yield modelo.findOne(filtro);
-        yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });
+        yield estado_model_1.default.objModel.deleteMany({ refPulpo: objToDel._id });
     });
 });
-PulpoSchema.pre('deleteMany', function () {
+objSchema.pre('deleteMany', function () {
     return __awaiter(this, void 0, void 0, function* () {
         const filtro = this.getQuery();
         const arrObjToDel = yield this.model.find(filtro);
         for (let objToDel of arrObjToDel) {
-            yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });
+            yield estado_model_1.default.objModel.deleteMany({ refPulpo: objToDel._id });
         }
     });
 });
-exports.default = mongoose_1.model('Pulpo', PulpoSchema);
+let objModel = mongoose_1.model('Pulpo', objSchema);
+exports.default = {
+    objModel,
+    objSchema
+};

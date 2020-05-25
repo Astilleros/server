@@ -15,33 +15,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const lectura_model_1 = __importDefault(require("./lectura.model"));
 ;
-let ContadorSchema = new mongoose_1.Schema({
+;
+let objSchema = new mongoose_1.Schema({
     name: String
 }, {
     timestamps: true,
     autoIndex: true,
 });
 //Middlewares mongoose
-ContadorSchema.pre('deleteOne', true, function () {
+objSchema.pre('deleteOne', true, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const objToDel = this;
-        yield lectura_model_1.default.deleteMany({ refContador: objToDel._id });
+        yield lectura_model_1.default.objModel.deleteMany({ refContador: objToDel._id });
     });
 });
-ContadorSchema.pre('deleteOne', false, function () {
+objSchema.pre('deleteOne', false, function () {
     return __awaiter(this, void 0, void 0, function* () {
-        const filtro = this.getFilter();
+        const filtro = this.getQuery();
         const objToDel = yield this.model.findOne(filtro);
-        yield lectura_model_1.default.deleteMany({ refContador: objToDel._id });
+        yield lectura_model_1.default.objModel.deleteMany({ refContador: objToDel._id });
     });
 });
-ContadorSchema.pre('deleteMany', function () {
+objSchema.pre('deleteMany', function () {
     return __awaiter(this, void 0, void 0, function* () {
-        const filtro = this.getFilter();
+        const filtro = this.getQuery();
         const arrObjToDel = yield this.model.find(filtro);
         for (let objToDel of arrObjToDel) {
-            yield lectura_model_1.default.deleteMany({ refContador: objToDel._id });
+            yield lectura_model_1.default.objModel.deleteMany({ refContador: objToDel._id });
         }
     });
 });
-exports.default = mongoose_1.model('Contador', ContadorSchema);
+let objModel = mongoose_1.model('Contador', objSchema);
+exports.default = {
+    objModel,
+    objSchema
+};

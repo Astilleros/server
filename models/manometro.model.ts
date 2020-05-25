@@ -1,10 +1,11 @@
-import { Schema, Document, model } from 'mongoose';
+import { Schema, Document, model, Model } from 'mongoose';
+
 
 export interface IManometro extends Document {
     name: string
 };
 
-let ManometroSchema: Schema = new Schema({
+let objSchema: Schema<IManometro> = new Schema<IManometro>({
     name: String
 },{
     timestamps: true,
@@ -12,4 +13,10 @@ let ManometroSchema: Schema = new Schema({
 });
 
 
-export default model<IManometro>('Manometro', ManometroSchema);
+ let objModel : Model<IManometro> = model<IManometro>('Manometro', objSchema);
+
+
+export default {
+	objModel,
+	objSchema
+}

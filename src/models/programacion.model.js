@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 ;
 ;
-let ProgramacionSchema = new mongoose_1.Schema({
+let objSchema = new mongoose_1.Schema({
     data: String,
     running: Boolean,
     inicio: Date,
@@ -12,4 +12,8 @@ let ProgramacionSchema = new mongoose_1.Schema({
     timestamps: true,
     autoIndex: true,
 });
-exports.default = mongoose_1.model('Programacion', ProgramacionSchema);
+let objModel = mongoose_1.model('Programacion', objSchema);
+exports.default = {
+    objModel,
+    objSchema
+};

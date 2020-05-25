@@ -90,4 +90,18 @@ router.post('/lectura/:refContador', upload.single('photo'), async function (req
 
 });
 
+// RESTART DB
+router.get('/db/', async function (req, res, next) {
+
+    try {
+        let ok = await DispositivoController.restartDB();
+        if(ok == false) res.status(404).send();
+        else res.status(200).send();
+    }
+    catch ( e ) {
+        res.status(400).send(e);
+    }
+
+});
+
 export default router;

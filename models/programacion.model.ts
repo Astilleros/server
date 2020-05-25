@@ -1,4 +1,4 @@
-import { Document, Model, model, Types, Schema, Query } from "mongoose"
+import { Document, Model, model, Schema } from "mongoose"
 
 export interface ITimeUTC {
         unix: number,
@@ -15,7 +15,7 @@ export interface IProgramacion extends Document {
 };
 
 
-let ProgramacionSchema: Schema = new Schema({
+let objSchema: Schema<IProgramacion> = new Schema<IProgramacion>({
     data: String,
     running: Boolean,
     inicio: Date,
@@ -26,4 +26,10 @@ let ProgramacionSchema: Schema = new Schema({
 });
 
 
-export default model<IProgramacion>('Programacion', ProgramacionSchema);
+let objModel : Model<IProgramacion> = model<IProgramacion>('Programacion', objSchema);
+
+
+export default {
+   objModel,
+   objSchema
+}

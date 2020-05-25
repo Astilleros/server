@@ -6,7 +6,7 @@ export interface IValvula extends Document {
 };
 
 
-let ValvulaSchema: Schema = new Schema({
+let objSchema: Schema<IValvula> = new Schema<IValvula>({
     name: String
 },{
     timestamps: true,
@@ -14,4 +14,10 @@ let ValvulaSchema: Schema = new Schema({
 });
 
 
-export default model<IValvula>('Valvula', ValvulaSchema);
+let objModel : Model<IValvula> = model<IValvula>('Valvula', objSchema);
+
+
+export default {
+   objModel,
+   objSchema
+}

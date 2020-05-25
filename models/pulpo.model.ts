@@ -11,21 +11,21 @@ export interface IPulpo extends Document {
     name: string,
     user: string,
     password: string,
-    contadores: IContador[],
-    manometros: IManometro[],
-    valvulas: IValvula[],
-    programaciones: IProgramacion[]
+    contadores: Types.Array<IContador>,
+    manometros: Types.Array<IManometro>,
+    valvulas: Types.Array<IValvula>,
+    programaciones: Types.Array<IProgramacion>
 };
 
 
-let PulpoSchema: Schema = new Schema({
+let objSchema: Schema = new Schema({
     name: String,
     user: String,
     password: String,
-    contadores: [Contador],
-    manometros: [Manometro],
-    valvulas: [Valvula],
-    programaciones: [Programacion]
+    contadores: [Contador.objSchema],
+    manometros: [Manometro.objSchema],
+    valvulas: [Valvula.objSchema],
+    programaciones: [Programacion.objSchema]
 },{
     timestamps: true,
     autoIndex: true,
@@ -33,25 +33,31 @@ let PulpoSchema: Schema = new Schema({
 
 
 //Middlewares mongoose
-PulpoSchema.pre<IPulpo>('deleteOne',true,  async function() {
+objSchema.pre<IPulpo>('deleteOne',true,  async function() {
     const objToDel = this;
-    await Estado.deleteMany({ refPulpo: objToDel._id });
+    await Estado.objModel.deleteMany({ refPulpo: objToDel._id });
 
 });
 
-PulpoSchema.pre< Query<IPulpo> | any >('deleteOne', false, async function() {
+objSchema.pre< Query<IPulpo> | any >('deleteOne', false, async function() {
     const filtro = this.getQuery();
     const modelo = this.model;
     const objToDel = await modelo.findOne(filtro);
-    await Estado.deleteMany({ refPulpo: objToDel._id });
+    await Estado.objModel.deleteMany({ refPulpo: objToDel._id });
 });
 
-PulpoSchema.pre< Query<IPulpo> | any >('deleteMany', async function() {
+objSchema.pre< Query<IPulpo> | any >('deleteMany', async function() {
     const filtro = this.getQuery();
     const arrObjToDel = await this.model.find(filtro);
     for(let objToDel of arrObjToDel){
-        await Estado.deleteMany({ refPulpo: objToDel._id });
+        await Estado.objModel.deleteMany({ refPulpo: objToDel._id });
     }
 });
 
-export default model<IPulpo>('Pulpo', PulpoSchema);
+let objModel : Model<IPulpo> = model<IPulpo>('Pulpo', objSchema);
+
+
+export default {
+   objModel,
+   objSchema
+}

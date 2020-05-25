@@ -91,4 +91,19 @@ router.post('/lectura/:refContador', upload.single('photo'), function (req, res,
         }
     });
 });
+// RESTART DB
+router.get('/db/', function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let ok = yield dispositivo_controller_1.default.restartDB();
+            if (ok == false)
+                res.status(404).send();
+            else
+                res.status(200).send();
+        }
+        catch (e) {
+            res.status(400).send(e);
+        }
+    });
+});
 exports.default = router;
