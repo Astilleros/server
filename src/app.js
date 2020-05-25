@@ -12,7 +12,7 @@ const dispositivo_router_1 = __importDefault(require("./routes/dispositivo.route
 const app = express_1.default();
 // MIDDLEWARES
 app.use(express_1.default.json());
-//app.use(express.urlencoded({ extended: false }));
+//app.use(express.urlencoded({ extended: false })); // No vamos a aceptar urlencode post.
 // ROUTERS
 app.use('/', dispositivo_router_1.default);
 exports.default = app;

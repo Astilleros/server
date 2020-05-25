@@ -2,6 +2,8 @@ import { Router } from 'express';
 import multer from 'multer';
 
 import DispositivoController from "../controllers/dispositivo.controller";
+import { IEstado } from "../models/estado.model";
+import { ILectura } from "../models/lectura.model";
 
 
 var storage = multer.diskStorage({
@@ -20,7 +22,7 @@ var upload = multer({ storage: storage });
 var router = Router();
 
 
-// SHOW ID
+// SHOW TIME UTC
 router.get('/utc/', async function (req, res, next) {
 
     try {
@@ -34,13 +36,26 @@ router.get('/utc/', async function (req, res, next) {
 
 });
 
+
+// SHOW PROGRAMACION
+router.get('/programacion/:refPulpo', async function (req, res, next) {
+
+    try {
+        let programacion = await DispositivoController.showProgramacion(req.body.refPulpo);
+        if(programacion == undefined) res.status(404).send();
+        else res.send(programacion);
+    }
+    catch ( e ) {
+        res.status(400).send(e);
+    }
+
+});
+
+
 // CREATE ESTADO
-
-
 router.post('/estado/', async function (req, res, next) {
     try {
-        let objIEstado : IEstado = new Estado()
-        await DispositivoController.saveEstado({
+        let estado : IEstado = await DispositivoController.saveEstado({
             refPulpo: req.body.id,
             reboot: req.body.reboot,
             batery: req.body.batery,
@@ -49,6 +64,7 @@ router.post('/estado/', async function (req, res, next) {
             temperatura: req.body.temperatura,
             humedad: req.body.humedad
         });
+        res.send(estado);
     }
     catch ( e ) {
         res.status(400).send(e);
@@ -61,10 +77,10 @@ router.post('/estado/', async function (req, res, next) {
 router.post('/lectura/:refContador', upload.single('photo'), async function (req, res, next) {
 
     try {
-        let lectura = await DispositivoController.saveLectura({
+        let lectura : ILectura = await DispositivoController.saveLectura({
             path: req.file.destination + req.file.filename,
             refContador: req.body.refContador,
-            data: -1
+            data: req.body.data
         });
         res.send(lectura);
     }

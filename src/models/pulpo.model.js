@@ -40,14 +40,15 @@ PulpoSchema.pre('deleteOne', true, function () {
 });
 PulpoSchema.pre('deleteOne', false, function () {
     return __awaiter(this, void 0, void 0, function* () {
-        const filtro = this.getFilter();
-        const objToDel = yield this.model.findOne(filtro);
+        const filtro = this.getQuery();
+        const modelo = this.model;
+        const objToDel = yield modelo.findOne(filtro);
         yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });
     });
 });
 PulpoSchema.pre('deleteMany', function () {
     return __awaiter(this, void 0, void 0, function* () {
-        const filtro = this.getFilter();
+        const filtro = this.getQuery();
         const arrObjToDel = yield this.model.find(filtro);
         for (let objToDel of arrObjToDel) {
             yield estado_model_1.default.deleteMany({ refPulpo: objToDel._id });

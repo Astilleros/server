@@ -5,7 +5,9 @@ const mongoose_1 = require("mongoose");
 ;
 let ProgramacionSchema = new mongoose_1.Schema({
     data: String,
-    running: Boolean
+    running: Boolean,
+    inicio: Date,
+    final: Date
 }, {
     timestamps: true,
     autoIndex: true,

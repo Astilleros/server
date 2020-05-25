@@ -1,4 +1,5 @@
-import { Schema, Document, model, Types } from 'mongoose';
+import { Document, Model, model, Types, Schema, Query } from "mongoose";
+
 import Estado, { IEstado } from './estado.model';
 import Valvula, { IValvula } from './valvula.model';
 import Manometro, { IManometro }   from './manometro.model';
@@ -32,20 +33,21 @@ let PulpoSchema: Schema = new Schema({
 
 
 //Middlewares mongoose
-PulpoSchema.pre<any>('deleteOne',true,  async function() {
+PulpoSchema.pre<IPulpo>('deleteOne',true,  async function() {
     const objToDel = this;
     await Estado.deleteMany({ refPulpo: objToDel._id });
 
 });
 
-PulpoSchema.pre<any>('deleteOne', false, async function() {
-    const filtro = this.getFilter();
-    const objToDel = await this.model.findOne(filtro);
+PulpoSchema.pre< Query<IPulpo> | any >('deleteOne', false, async function() {
+    const filtro = this.getQuery();
+    const modelo = this.model;
+    const objToDel = await modelo.findOne(filtro);
     await Estado.deleteMany({ refPulpo: objToDel._id });
 });
 
-PulpoSchema.pre<any>('deleteMany', async function() {
-    const filtro = this.getFilter();
+PulpoSchema.pre< Query<IPulpo> | any >('deleteMany', async function() {
+    const filtro = this.getQuery();
     const arrObjToDel = await this.model.find(filtro);
     for(let objToDel of arrObjToDel){
         await Estado.deleteMany({ refPulpo: objToDel._id });

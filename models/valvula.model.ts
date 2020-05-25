@@ -1,4 +1,4 @@
-import { Schema, Document, model } from 'mongoose';
+import { Document, Model, model, Types, Schema, Query } from "mongoose";
 
 
 export interface IValvula extends Document {

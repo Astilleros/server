@@ -1,4 +1,4 @@
-import { Schema, Document, model } from 'mongoose';
+import { Document, Model, model, Types, Schema, Query } from "mongoose"
 
 export interface ITimeUTC {
         unix: number,
@@ -10,12 +10,16 @@ export interface ITimeUTC {
 export interface IProgramacion extends Document {
     data: string,
     running: boolean
+    inicio: Date,
+    final: Date
 };
 
 
 let ProgramacionSchema: Schema = new Schema({
     data: String,
-    running: Boolean
+    running: Boolean,
+    inicio: Date,
+    final: Date
 },{
     timestamps: true,
     autoIndex: true,

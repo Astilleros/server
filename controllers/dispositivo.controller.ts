@@ -25,6 +25,19 @@ async function timeUTC() : Promise<ITimeUTC> {
     return date;
 }
 
+async function showProgramacion( refPulpo : mongoose.Types.ObjectId ) : Promise<IProgramacion | undefined> {
+    let objPulpo : IPulpo | null  = await Pulpo.findOne({ _id: refPulpo });
+    if (objPulpo == null){
+        return undefined;
+    }
+    let objProgramacion : IProgramacion;
+    for ( let programacion of objPulpo.programaciones){
+        if(moment.utc().isBetween(moment(programacion.inicio), moment(programacion.final))){
+            return programacion;
+        }
+    }
+}
+
 async function saveEstado(objCreate: IEstadoInput) : Promise<IEstado> {
 
     return await Estado.create(objCreate);
@@ -39,4 +52,5 @@ export default {
   timeUTC,
   saveEstado,
   saveLectura,
+  showProgramacion
 };

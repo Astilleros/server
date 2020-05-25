@@ -15,10 +15,11 @@ const app : express.Application = express();
 
 // MIDDLEWARES
 app.use(express.json());
-//app.use(express.urlencoded({ extended: false }));
+//app.use(express.urlencoded({ extended: false })); // No vamos a aceptar urlencode post.
 
 // ROUTERS
 app.use('/', pulpoRouter);
+
 
 export default app;
 

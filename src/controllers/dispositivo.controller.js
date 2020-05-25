@@ -13,6 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment_timezone_1 = __importDefault(require("moment-timezone"));
+//moment.tz.setDefault("Europe/Madrid");
+//let date = moment().tz("America/Toronto");
+//let date = moment().tz("Europe/Madrid");
+//console.log(date.utc().format());
+//console.log(moment().isoWeekday());
+const pulpo_model_1 = __importDefault(require("../models/pulpo.model"));
 const estado_model_1 = __importDefault(require("../models/estado.model"));
 const lectura_model_1 = __importDefault(require("../models/lectura.model"));
 function timeUTC() {
@@ -25,6 +31,20 @@ function timeUTC() {
             minuto: nowUTC.minute()
         };
         return date;
+    });
+}
+function showProgramacion(refPulpo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let objPulpo = yield pulpo_model_1.default.findOne({ _id: refPulpo });
+        if (objPulpo == null) {
+            return undefined;
+        }
+        let objProgramacion;
+        for (let programacion of objPulpo.programaciones) {
+            if (moment_timezone_1.default.utc().isBetween(moment_timezone_1.default(programacion.inicio), moment_timezone_1.default(programacion.final))) {
+                return programacion;
+            }
+        }
     });
 }
 function saveEstado(objCreate) {
@@ -41,4 +61,5 @@ exports.default = {
     timeUTC,
     saveEstado,
     saveLectura,
+    showProgramacion
 };

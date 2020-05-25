@@ -25,7 +25,7 @@ var storage = multer_1.default.diskStorage({
 });
 var upload = multer_1.default({ storage: storage });
 var router = express_1.Router();
-// SHOW ID
+// SHOW TIME UTC
 router.get('/utc/', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -40,11 +40,26 @@ router.get('/utc/', function (req, res, next) {
         }
     });
 });
+// SHOW PROGRAMACION
+router.get('/programacion/:refPulpo', function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let programacion = yield dispositivo_controller_1.default.showProgramacion(req.body.refPulpo);
+            if (programacion == undefined)
+                res.status(404).send();
+            else
+                res.send(programacion);
+        }
+        catch (e) {
+            res.status(400).send(e);
+        }
+    });
+});
 // CREATE ESTADO
 router.post('/estado/', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield dispositivo_controller_1.default.saveEstado({
+            let estado = yield dispositivo_controller_1.default.saveEstado({
                 refPulpo: req.body.id,
                 reboot: req.body.reboot,
                 batery: req.body.batery,
@@ -53,6 +68,7 @@ router.post('/estado/', function (req, res, next) {
                 temperatura: req.body.temperatura,
                 humedad: req.body.humedad
             });
+            res.send(estado);
         }
         catch (e) {
             res.status(400).send(e);
@@ -66,7 +82,7 @@ router.post('/lectura/:refContador', upload.single('photo'), function (req, res,
             let lectura = yield dispositivo_controller_1.default.saveLectura({
                 path: req.file.destination + req.file.filename,
                 refContador: req.body.refContador,
-                data: -1
+                data: req.body.data
             });
             res.send(lectura);
         }
