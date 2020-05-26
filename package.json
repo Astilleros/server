@@ -1,7 +1,7 @@
 {
   "name": "agrobot",
   "version": "1.0.0",
-  "description": "Servidor para presiones y arquetas.",
+  "description": "Servidor para casetas y arquetas.",
   "scripts": {
     "start": "nodemon ./src/bin/www"
   },

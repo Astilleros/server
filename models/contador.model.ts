@@ -25,13 +25,20 @@ objSchema.pre<IContador>('deleteOne',true,  async function() {
     await Lectura.objModel.deleteMany({ refContador: objToDel._id });
 });
 
-objSchema.pre< Query<IContador> | any >('deleteOne', false, async function() {
-	const filtro = this.getQuery();
-	const objToDel = await this.model.findOne(filtro);
-	await Lectura.objModel.deleteMany({ refContador: objToDel._id });
+objSchema.pre<IContador>('remove',  async function() {
+    const objToDel = this;
+    await Lectura.objModel.deleteMany({ refContador: objToDel._id });
 });
 
-objSchema.pre< Query<IContador> | any >('deleteMany', async function() {
+objSchema.pre< Query<IContador> & { model: Model<IContador> } >('deleteOne', false, async function() {
+	const filtro = this.getQuery();
+	const objToDel = await this.model.findOne(filtro);
+    if(objToDel != null){
+		await Lectura.objModel.deleteMany({ refContador: objToDel._id });
+	}
+});
+
+objSchema.pre< Query<IContador> & { model: Model<IContador> } >('deleteMany', async function() {
 	const filtro = this.getQuery();
 	const arrObjToDel = await this.model.find(filtro);
 	for(let objToDel of arrObjToDel){

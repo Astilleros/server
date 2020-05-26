@@ -66,6 +66,12 @@ function restartDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield pulpo_model_1.default.objModel.deleteMany({});
+            yield estado_model_1.default.objModel.deleteMany({});
+            yield contador_model_1.default.objModel.deleteMany({});
+            yield valvula_model_1.default.objModel.deleteMany({});
+            yield manometro_model_1.default.objModel.deleteMany({});
+            yield programacion_model_1.default.objModel.deleteMany({});
+            yield lectura_model_1.default.objModel.deleteMany({});
             let objPulpo = new pulpo_model_1.default.objModel({
                 name: 'PName',
                 user: 'PUser',
@@ -75,48 +81,34 @@ function restartDB() {
                 valvulas: [],
                 programaciones: []
             });
-            yield contador_model_1.default.objModel.deleteMany({});
-            let objContador = yield contador_model_1.default.objModel.create({
-                name: 'PContadorName1'
+            let objContador = new contador_model_1.default.objModel({
+                name: 'PContadorName'
             });
             objPulpo.contadores.push(objContador);
-            objPulpo.contadores.push({
-                name: 'PContadorName2'
-            });
-            yield valvula_model_1.default.objModel.deleteMany({});
-            let objValvula = yield valvula_model_1.default.objModel.create({
+            let objValvula = new valvula_model_1.default.objModel({
                 name: 'PValvulaName'
             });
-            objPulpo.valvulas.push(objContador);
-            yield manometro_model_1.default.objModel.deleteMany({});
-            let objManometro = yield manometro_model_1.default.objModel.create({
+            objPulpo.valvulas.push(objValvula);
+            let objManometro = new manometro_model_1.default.objModel({
                 name: 'PManometroName'
             });
-            objPulpo.manometros.push(objContador);
-            yield programacion_model_1.default.objModel.deleteMany({});
-            let objProgramacion = yield programacion_model_1.default.objModel.create({
+            objPulpo.manometros.push(objManometro);
+            let objProgramacion = new programacion_model_1.default.objModel({
                 data: 'JSONDATAPROGRAMACION? O ARRAY DE SUBDOCS ORDENES',
                 running: true,
                 inicio: new Date(),
                 final: new Date()
             });
-            objPulpo.programaciones.push(objContador);
-            objPulpo.save();
-            // este no tira
-            yield pulpo_model_1.default.objModel.updateOne({ _id: objPulpo._id }, { $push: {
-                    manometros: {
-                        name: 'PManometroName2'
-                    }
-                }
-            }).exec();
-            yield lectura_model_1.default.objModel.deleteMany({});
-            let objLectura = yield lectura_model_1.default.objModel.create({
+            objPulpo.programaciones.push(objProgramacion);
+            ////
+            yield objPulpo.save();
+            let objLectura = new lectura_model_1.default.objModel({
                 path: 'PPath',
                 refContador: objContador._id,
                 data: 123
             });
-            yield estado_model_1.default.objModel.deleteMany({});
-            let objEstado = yield estado_model_1.default.objModel.create({
+            yield objLectura.save();
+            let objEstado = new estado_model_1.default.objModel({
                 reboot: true,
                 batery: 12,
                 signal: 13,
@@ -125,6 +117,14 @@ function restartDB() {
                 humedad: 16,
                 refPulpo: objPulpo._id
             });
+            yield objEstado.save();
+            ////
+            //Elimina todo con sus middlewares
+            //await objPulpo.remove();
+            //objPulpo.contadores.id(objContador._id).remove();
+            yield objPulpo.contadores.id(objContador._id).remove();
+            yield objPulpo.save();
+            //await objContador.remove();
             return true;
         }
         catch (e) {

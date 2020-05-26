@@ -11,10 +11,10 @@ export interface IPulpo extends Document {
     name: string,
     user: string,
     password: string,
-    contadores: Types.Array<IContador>,
-    manometros: Types.Array<IManometro>,
-    valvulas: Types.Array<IValvula>,
-    programaciones: Types.Array<IProgramacion>
+    contadores: Types.DocumentArray<IContador> ,
+    manometros: Types.DocumentArray<IManometro>,
+    valvulas: Types.DocumentArray<IValvula>,
+    programaciones: Types.DocumentArray<IProgramacion>
 };
 
 
@@ -36,17 +36,23 @@ let objSchema: Schema = new Schema({
 objSchema.pre<IPulpo>('deleteOne',true,  async function() {
     const objToDel = this;
     await Estado.objModel.deleteMany({ refPulpo: objToDel._id });
-
 });
 
-objSchema.pre< Query<IPulpo> | any >('deleteOne', false, async function() {
-    const filtro = this.getQuery();
-    const modelo = this.model;
-    const objToDel = await modelo.findOne(filtro);
+objSchema.pre<IPulpo>('remove',  async function() {
+    const objToDel = this;
     await Estado.objModel.deleteMany({ refPulpo: objToDel._id });
 });
 
-objSchema.pre< Query<IPulpo> | any >('deleteMany', async function() {
+objSchema.pre< Query<IPulpo > & { model: Model<IPulpo> }  >('deleteOne', false, async function() {
+    const filtro = this.getQuery();
+    const modelo = this.model;
+    const objToDel = await modelo.findOne(filtro);
+    if(objToDel != null){
+        await Estado.objModel.deleteMany({ refPulpo: objToDel._id });
+    }
+});
+
+objSchema.pre< Query<IPulpo>  & { model: Model<IPulpo> } >('deleteMany', async function() {
     const filtro = this.getQuery();
     const arrObjToDel = await this.model.find(filtro);
     for(let objToDel of arrObjToDel){

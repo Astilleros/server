@@ -55,6 +55,13 @@ async function saveLectura(objCreate: ILecturaInput) : Promise<ILectura> {
 async function restartDB() : Promise<Boolean> {
     try {
         await Pulpo.objModel.deleteMany({});
+        await Estado.objModel.deleteMany({});
+        await Contador.objModel.deleteMany({});
+        await Valvula.objModel.deleteMany({});
+        await Manometro.objModel.deleteMany({});
+        await Programacion.objModel.deleteMany({});
+        await Lectura.objModel.deleteMany({});
+
         let objPulpo : IPulpo = new Pulpo.objModel({
             name: 'PName',
             user: 'PUser',
@@ -65,60 +72,41 @@ async function restartDB() : Promise<Boolean> {
             programaciones: []
         });
 
-        await Contador.objModel.deleteMany({});
-        // Este crea un documento en la bd y en su tabla y despues lo copia al array. ( duplica)
-        let objContador : IContador = await Contador.objModel.create({
-            name: 'PContadorName1'
+        let objContador : IContador = new Contador.objModel({
+            name: 'PContadorName'
         });
         objPulpo.contadores.push(objContador);
-        // Este no crea _v (no crea un documento mongoose con su propia tabla), pero si añade un documetno al array.
-        objPulpo.contadores.push({
-            name: 'PContadorName2'
-        });
 
-        await Valvula.objModel.deleteMany({});
-        let objValvula : IValvula = await Valvula.objModel.create({
+
+        let objValvula : IValvula = new Valvula.objModel({
             name: 'PValvulaName'
         });
-        objPulpo.valvulas.push(objContador);
+        objPulpo.valvulas.push(objValvula);
         
-        await Manometro.objModel.deleteMany({});
-        let objManometro : IManometro = await Manometro.objModel.create({
+        let objManometro : IManometro = new Manometro.objModel({
             name: 'PManometroName'
         });
-        objPulpo.manometros.push(objContador);
+        objPulpo.manometros.push(objManometro);
 
-        await Programacion.objModel.deleteMany({});
-        let objProgramacion : IProgramacion = await Programacion.objModel.create({
+        let objProgramacion : IProgramacion = new Programacion.objModel({
             data: 'JSONDATAPROGRAMACION? O ARRAY DE SUBDOCS ORDENES',
             running: true,
             inicio: new Date(),
             final: new Date()
         });
-        objPulpo.programaciones.push(objContador);
+        objPulpo.programaciones.push(objProgramacion);
 
-        objPulpo.save();
+////
+        await objPulpo.save();
 
-// este no tira
-        await Pulpo.objModel.updateOne(
-            { _id: objPulpo._id },
-            { $push: { 
-                manometros: {
-                        name: 'PManometroName2'
-                    }
-                } 
-            }
-         ).exec();
-
-        await Lectura.objModel.deleteMany({});
-        let objLectura : ILectura = await Lectura.objModel.create({
+        let objLectura : ILectura = new Lectura.objModel({
             path: 'PPath',
             refContador: objContador._id,
             data: 123
         });
+        await objLectura.save();
 
-        await Estado.objModel.deleteMany({});
-        let objEstado : IEstado = await Estado.objModel.create({
+        let objEstado : IEstado = new Estado.objModel({
             reboot: true,
             batery: 12,
             signal: 13,
@@ -127,6 +115,16 @@ async function restartDB() : Promise<Boolean> {
             humedad: 16,
             refPulpo: objPulpo._id
         });
+        await objEstado.save();
+
+////
+        //Elimina todo con sus middlewares
+        //await objPulpo.remove();
+        //objPulpo.contadores.id(objContador._id).remove();
+        await objPulpo.contadores.id(objContador._id).remove();
+        await objPulpo.save();
+        //await objContador.remove();
+
         return true;
     } catch (e) {
         return false;

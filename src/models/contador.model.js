@@ -29,6 +29,12 @@ objSchema.pre('deleteOne', true, function () {
         yield lectura_model_1.default.objModel.deleteMany({ refContador: objToDel._id });
     });
 });
+objSchema.pre('remove', function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        const objToDel = this;
+        yield lectura_model_1.default.objModel.deleteMany({ refContador: objToDel._id });
+    });
+});
 objSchema.pre('deleteOne', false, function () {
     return __awaiter(this, void 0, void 0, function* () {
         const filtro = this.getQuery();
