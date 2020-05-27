@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const multer_1 = __importDefault(require("multer"));
-const dispositivo_controller_1 = __importDefault(require("../modules/pulpo/controllers/dispositivo.controller"));
+const pulpo_controller_1 = __importDefault(require("../modules/pulpo/controller/pulpo.controller"));
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
@@ -29,7 +29,7 @@ var router = express_1.Router();
 router.get('/utc/', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let lectura = yield dispositivo_controller_1.default.timeUTC();
+            let lectura = yield pulpo_controller_1.default.timeUTC();
             if (lectura == null)
                 res.status(404).send();
             else
@@ -44,7 +44,7 @@ router.get('/utc/', function (req, res, next) {
 router.get('/programacion/:refPulpo', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let programacion = yield dispositivo_controller_1.default.showProgramacion(req.body.refPulpo);
+            let programacion = yield pulpo_controller_1.default.showProgramacion(req.body.refPulpo);
             if (programacion == undefined)
                 res.status(404).send();
             else
@@ -59,7 +59,7 @@ router.get('/programacion/:refPulpo', function (req, res, next) {
 router.post('/estado/', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let estado = yield dispositivo_controller_1.default.saveEstado({
+            let estado = yield pulpo_controller_1.default.saveEstado({
                 refPulpo: req.body.id,
                 reboot: req.body.reboot,
                 batery: req.body.batery,
@@ -79,7 +79,7 @@ router.post('/estado/', function (req, res, next) {
 router.post('/lectura/:refContador', upload.single('photo'), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let lectura = yield dispositivo_controller_1.default.saveLectura({
+            let lectura = yield pulpo_controller_1.default.saveLectura({
                 path: req.file.destination + req.file.filename,
                 refContador: req.body.refContador,
                 data: req.body.data
@@ -95,7 +95,7 @@ router.post('/lectura/:refContador', upload.single('photo'), function (req, res,
 router.get('/db/', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let ok = yield dispositivo_controller_1.default.restartDB();
+            let ok = yield pulpo_controller_1.default.restartDB();
             if (ok == false)
                 res.status(404).send();
             else

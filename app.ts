@@ -1,12 +1,14 @@
 import express from 'express';
+import config from './config/config';
 
 
-// Inicializamos mongoose
+// Inicializamos mongoose con mongodb
 import dbConnect from './config/db';
-let db = dbConnect();
+dbConnect(config.mongodb_server);
 
 // Traemos routers.
-import pulpoRouter from './routes/dispositivo.router';
+//import pulpoRouter from './routes/pulpo.router';
+import { Routes } from './routes/index.router';
 
 
 
@@ -18,7 +20,7 @@ app.use(express.json());
 //app.use(express.urlencoded({ extended: false })); // No vamos a aceptar urlencode post.
 
 // ROUTERS
-app.use('/', pulpoRouter);
+Routes(app);
 
 
 export default app;

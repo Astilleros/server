@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Servidor para casetas y arquetas.",
   "scripts": {
-    "start": "nodemon ./src/bin/www"
+    "start": "nodemon ./src/index"
   },
   "repository": {
     "type": "git",

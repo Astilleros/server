@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
-import config from './config';
 
-let dbConnect = async () => {
+let dbConnect = async (mongodb_server : string) : Promise<mongoose.Mongoose | undefined> => {
 	try {
-		let conn = await mongoose.connect(config.mongodb_server, {
+		let conn : mongoose.Mongoose = await mongoose.connect(mongodb_server, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true
 		});

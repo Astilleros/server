@@ -4,15 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-// Inicializamos mongoose
+const config_1 = __importDefault(require("./config/config"));
+// Inicializamos mongoose con mongodb
 const db_1 = __importDefault(require("./config/db"));
-let db = db_1.default();
+db_1.default(config_1.default.mongodb_server);
 // Traemos routers.
-const dispositivo_router_1 = __importDefault(require("./routes/dispositivo.router"));
+//import pulpoRouter from './routes/pulpo.router';
+const index_router_1 = require("./routes/index.router");
 const app = express_1.default();
 // MIDDLEWARES
 app.use(express_1.default.json());
 //app.use(express.urlencoded({ extended: false })); // No vamos a aceptar urlencode post.
 // ROUTERS
-app.use('/', dispositivo_router_1.default);
+index_router_1.Routes(app);
 exports.default = app;

@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import multer from 'multer';
 
-import DispositivoController from "../controllers/dispositivo.controller";
-import { IEstado } from "../models/estado.model";
-import { ILectura } from "../models/lectura.model";
+import DispositivoController from "../modules/pulpo/controller/pulpo.controller";
+import { IEstado } from "../modules/pulpo/models/estado.model";
+import { ILectura } from "../modules/pulpo/models/lectura.model";
 
 
 var storage = multer.diskStorage({
