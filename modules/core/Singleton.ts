@@ -2,7 +2,7 @@
 /**
  *  This class is used to manage routing in client side.
  */
-export abstract class absModule {
+ export default abstract class Singleton {
     protected arrParams: any;
 
 
@@ -16,9 +16,4 @@ export abstract class absModule {
     constructor( arrParams: any ) {
         this.arrParams = arrParams;
     }
-
-
-    //  =====================================================
-
-
 }

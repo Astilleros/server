@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 
-import DispositivoController from "../modules/pulpo/controller/pulpo.controller";
+import { PulpoController } from "../modules/pulpo/controller/pulpo.controller";
 import { IEstado } from "../modules/pulpo/models/estado.model";
 import { ILectura } from "../modules/pulpo/models/lectura.model";
 
@@ -26,7 +26,7 @@ var router = Router();
 router.get('/utc/', async function (req, res, next) {
 
     try {
-        let lectura = await DispositivoController.timeUTC();
+        let lectura = await PulpoController.timeUTC();
         if(lectura == null) res.status(404).send();
         else res.send(lectura);
     }
@@ -41,7 +41,7 @@ router.get('/utc/', async function (req, res, next) {
 router.get('/programacion/:refPulpo', async function (req, res, next) {
 
     try {
-        let programacion = await DispositivoController.showProgramacion(req.body.refPulpo);
+        let programacion = await PulpoController.showProgramacion(req.body.refPulpo);
         if(programacion == undefined) res.status(404).send();
         else res.send(programacion);
     }
@@ -55,7 +55,7 @@ router.get('/programacion/:refPulpo', async function (req, res, next) {
 // CREATE ESTADO
 router.post('/estado/', async function (req, res, next) {
     try {
-        let estado : IEstado = await DispositivoController.saveEstado({
+        let estado : IEstado = await PulpoController.saveEstado({
             refPulpo: req.body.id,
             reboot: req.body.reboot,
             batery: req.body.batery,
@@ -77,7 +77,7 @@ router.post('/estado/', async function (req, res, next) {
 router.post('/lectura/:refContador', upload.single('photo'), async function (req, res, next) {
 
     try {
-        let lectura : ILectura = await DispositivoController.saveLectura({
+        let lectura : ILectura = await PulpoController.saveLectura({
             path: req.file.destination + req.file.filename,
             refContador: req.body.refContador,
             data: req.body.data
@@ -94,7 +94,7 @@ router.post('/lectura/:refContador', upload.single('photo'), async function (req
 router.get('/db/', async function (req, res, next) {
 
     try {
-        let ok = await DispositivoController.restartDB();
+        let ok = await PulpoController.restartDB();
         if(ok == false) res.status(404).send();
         else res.status(200).send();
     }

@@ -62,6 +62,9 @@ objSchema.pre< Query<IPulpo>  & { model: Model<IPulpo> } >('deleteMany', async f
 
 let objModel : Model<IPulpo> = model<IPulpo>('Pulpo', objSchema);
 
+
+
+
 export {
     //models
     objModel as PulpoModel,
