@@ -4,10 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const config_1 = __importDefault(require("./config/config"));
-// Inicializamos mongoose con mongodb
-const db_1 = __importDefault(require("./config/db"));
-db_1.default(config_1.default.mongodb_server);
+/*
+*/
 // Traemos routers.
 //import pulpoRouter from './routes/pulpo.router';
 const index_router_1 = require("./routes/index.router");

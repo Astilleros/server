@@ -1,16 +1,29 @@
 import mongoose from 'mongoose';
 
+let _dbm : mongoose.Mongoose ;
+let _init: boolean = false;
+
 let dbConnect = async (mongodb_server : string) : Promise<mongoose.Mongoose | undefined> => {
 	try {
-		let conn : mongoose.Mongoose = await mongoose.connect(mongodb_server, {
+		_dbm = await mongoose.connect(mongodb_server, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true
 		});
-		return conn;
+		_init = true;
+		return _dbm;
 	} catch (error) {
-		console.log(error);
 		return undefined;
 	}
 }
 
-export default dbConnect;
+let dbInstance = () : mongoose.Mongoose | undefined => {
+	if(_init == true)
+		return _dbm;
+	else 
+		return undefined;
+}
+
+export {
+	dbConnect,
+	dbInstance
+}

@@ -1,5 +1,19 @@
 import app from './app';
 import http from 'http';
+import config from './config/config';
+
+
+import moment from 'moment-timezone';
+//moment.tz.setDefault("Europe/Madrid");
+//let date = moment().tz("America/Toronto");
+//let date = moment().tz("Europe/Madrid");
+//console.log(date.utc().format());
+//console.log(moment().isoWeekday());
+
+
+// Inicializamos mongoose con mongodb
+import db from './config/db';
+db.dbConnect(config.arrConfig_Mongodb.strConnection);
 
 /**
  * Get port from environment and store in Express.

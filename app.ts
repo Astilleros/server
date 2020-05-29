@@ -1,10 +1,4 @@
 import express from 'express';
-import config from './config/config';
-
-
-// Inicializamos mongoose con mongodb
-import dbConnect from './config/db';
-dbConnect(config.mongodb_server);
 
 // Traemos routers.
 //import pulpoRouter from './routes/pulpo.router';

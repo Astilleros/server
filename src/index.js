@@ -5,6 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const http_1 = __importDefault(require("http"));
+const config_1 = __importDefault(require("./config/config"));
+//moment.tz.setDefault("Europe/Madrid");
+//let date = moment().tz("America/Toronto");
+//let date = moment().tz("Europe/Madrid");
+//console.log(date.utc().format());
+//console.log(moment().isoWeekday());
+// Inicializamos mongoose con mongodb
+const db_1 = __importDefault(require("./config/db"));
+var mongoose = db_1.default(config_1.default.arrConfig_Mongodb.strConnection);
+app_1.default.set('mongoose', mongoose);
 /**
  * Get port from environment and store in Express.
  */

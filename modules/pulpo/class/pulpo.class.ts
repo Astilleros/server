@@ -1,6 +1,5 @@
-import mongoose from 'mongoose';
-
-
+import { Types } from 'mongoose';
+import { dbInstance } from '../../../config/db';
 import moment from 'moment-timezone';
 //moment.tz.setDefault("Europe/Madrid");
 //let date = moment().tz("America/Toronto");
@@ -33,7 +32,7 @@ class Pulpo {
         return ITimeUTC;
     }
 
-    public async showProgramacion( refPulpo : mongoose.Types.ObjectId ) : Promise<IProgramacion | undefined> {
+    public async showProgramacion( refPulpo : Types.ObjectId ) : Promise<IProgramacion | undefined> {
         let objPulpo : IPulpo | null  = await PulpoModel.findOne({ _id: refPulpo });
         if (objPulpo == null){
             return undefined;
