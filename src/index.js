@@ -12,9 +12,8 @@ const config_1 = __importDefault(require("./config/config"));
 //console.log(date.utc().format());
 //console.log(moment().isoWeekday());
 // Inicializamos mongoose con mongodb
-const db_1 = __importDefault(require("./config/db"));
-var mongoose = db_1.default(config_1.default.arrConfig_Mongodb.strConnection);
-app_1.default.set('mongoose', mongoose);
+const db_1 = require("./config/db");
+db_1.dbConnect(config_1.default.arrConfig_Mongodb.strConnection);
 /**
  * Get port from environment and store in Express.
  */

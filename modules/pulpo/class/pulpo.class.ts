@@ -21,6 +21,9 @@ import { ProgramacionModel, IProgramacion, ITimeUTC } from '../models/programaci
 //https://dev.to/elasticrash/nodejs-singleton-injector-24n5
 class Pulpo { 
 
+    public constructor(){
+    }
+
     public timeUTC() : ITimeUTC {
         let momentUTC : moment.Moment = moment().utc();
         let ITimeUTC : ITimeUTC = {
@@ -47,8 +50,10 @@ class Pulpo {
     }
 
     public async saveEstado(objCreate: IEstadoInput) : Promise<IEstado> {
-
-        return await EstadoModel.create(objCreate);
+        let db = dbInstance();
+        console.log(db);
+        //return await EstadoModel.create(objCreate);
+        return await db?.models.Pulpo.create(objCreate);
     }
 
     public async saveLectura(objCreate: ILecturaInput) : Promise<ILectura> {

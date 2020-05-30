@@ -12,18 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.dbInstance = exports.dbConnect = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
+let _dbm;
 let dbConnect = (mongodb_server) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let conn = yield mongoose_1.default.connect(mongodb_server, {
+        _dbm = yield mongoose_1.default.connect(mongodb_server, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        return conn;
+        return _dbm;
     }
     catch (error) {
-        console.log(error);
         return undefined;
     }
 });
-exports.default = dbConnect;
+exports.dbConnect = dbConnect;
+let dbInstance = () => {
+    if (!_dbm)
+        return _dbm;
+    else
+        return undefined;
+};
+exports.dbInstance = dbInstance;

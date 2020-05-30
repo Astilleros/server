@@ -1,29 +1,29 @@
 import mongoose from 'mongoose';
 
-let _dbm : mongoose.Mongoose ;
-let _init: boolean = false;
 
-let dbConnect = async (mongodb_server : string) : Promise<mongoose.Mongoose | undefined> => {
-	try {
-		_dbm = await mongoose.connect(mongodb_server, {
-			useNewUrlParser: true,
-			useUnifiedTopology: true
-		});
-		_init = true;
-		return _dbm;
-	} catch (error) {
-		return undefined;
+export class DB { 
+
+    public constructor(){
 	}
-}
+	
+	private static _dbm : mongoose.Mongoose ;
 
-let dbInstance = () : mongoose.Mongoose | undefined => {
-	if(_init == true)
-		return _dbm;
-	else 
-		return undefined;
-}
+	async dbConnect(mongodb_server : string) : Promise<mongoose.Mongoose | undefined> {
+		try {
+			DB._dbm = await mongoose.connect(mongodb_server, {
+				useNewUrlParser: true,
+				useUnifiedTopology: true
+			});
+			return DB._dbm;
+		} catch (error) {
+			return undefined;
+		}
+	}
 
-export {
-	dbConnect,
-	dbInstance
+	dbInstance() : mongoose.Mongoose | undefined {
+		if(!DB._dbm)
+			return DB._dbm;
+		else 
+			return undefined;
+	}
 }

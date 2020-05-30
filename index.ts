@@ -12,8 +12,8 @@ import moment from 'moment-timezone';
 
 
 // Inicializamos mongoose con mongodb
-import db from './config/db';
-db.dbConnect(config.arrConfig_Mongodb.strConnection);
+import { dbConnect, dbInstance }  from './config/db'; 
+dbConnect(config.arrConfig_Mongodb.strConnection);
 
 /**
  * Get port from environment and store in Express.
