@@ -1,97 +1,104 @@
-import app from './app';
+import objConfig from './config/config';
+
+import mongoose from 'mongoose';
+import redis from 'redis';
+
+import express from 'express';
+import { Routes } from './routes/index.router';
+
 import http from 'http';
-import config from './config/config';
 
 
-import moment from 'moment-timezone';
-//moment.tz.setDefault("Europe/Madrid");
-//let date = moment().tz("America/Toronto");
-//let date = moment().tz("Europe/Madrid");
-//console.log(date.utc().format());
-//console.log(moment().isoWeekday());
+// en futura clase core/mongoose con params arrService_ModParams, que cargue el cliente en este singleton object with dependencies.
+let initMongoose = async () : Promise<mongoose.Mongoose> => {
+
+    let objMongoose : mongoose.Mongoose = await mongoose.connect(objConfig.arrConfig_Mongodb.strConnection, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+
+    objMongoose.set('useCreateIndex', true);
+
+    objMongoose.connection.on('connected', function() {
+        console.log("[Service] - Connected to MongoDB server.\n");
+    });
+    objMongoose.connection.on('error', function( err: any ) {
+        console.log("[Service] - Error on MongoDB connection.");
+        console.log( err );
+        process.exit(0);
+    } );
+
+    objMongoose.connection.on('disconnected', function() {
+        console.log("[Service] - Disconnected from MongoDB server.\n");
+        process.exit(0);
+    } );
 
 
-// Inicializamos mongoose con mongodb
-import { dbConnect, dbInstance }  from './config/db'; 
-dbConnect(config.arrConfig_Mongodb.strConnection);
+    // initSchema() => carga de todos los modelos e interfaces "fuera de las clases".
 
-/**
- * Get port from environment and store in Express.
- */
+    return objMongoose;
+};
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+// CAMBIO POR core/mngCACHE OOOOO en futura clase core/reddis con params arrService_ModParams, que cargue el cliente en este singleton object with dependencies.
+let inicializaReddis = () : redis.RedisClient =>{
+    const client = redis.createClient(
+        objConfig.arrConfig_RedisServer.intPort,
+        objConfig.arrConfig_RedisServer.strHost
+      );
+ 
+    client.on("error", function(error) {
+      console.error(error);
+    });
 
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val: any) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
+    return client;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
+// en futura clase core/express con params arrService_ModParams, que cargue la app en este singleton object with dependencies.
+let initExpressApp = () : express.Application =>{
 
-function onError(error: any) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+    const app  : express.Application = express();
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+    app.set('port', objConfig.arrConfig_WebService.intHttpPort);
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+    // MIDDLEWARES
+    app.use(express.json());
+
+    // ROUTERS
+    Routes(app);
+
+    return app;
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+let initHttp = () =>{
 
-function onListening() {
-  var addr : any = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  console.log('Listening en ' + bind);
+    let server = http.createServer(arrService_ModParams.objExpress);
+
+    server.listen(objConfig.arrConfig_WebService.intHttpPort);
+    server.on('error', () => console.log('error server http.'));
+    server.on('listening', () => console.log('escuchando...'));
+
+    return server;
 }
+
+var arrService_ModParams: any = {
+    //  ----------
+    objExpress: undefined,
+    //  ----------
+    objMongoose: undefined,
+    //  ----------
+    objClientReddis: undefined,
+    //  ----------
+    arrCore: {},
+    arrModel: {},
+    arrServices: {},
+};
+
+
+
+// MAIN
+(async ()=>{
+    arrService_ModParams.objMongoose = await initMongoose();
+    //arrService_ModParams.objClientReddis = await inicializaReddis();
+    arrService_ModParams.objExpress = initExpressApp();
+    var serverHttp = initHttp();
+})()

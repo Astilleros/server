@@ -1,5 +1,4 @@
 import { Types } from 'mongoose';
-import { dbInstance } from '../../../config/db';
 import moment from 'moment-timezone';
 //moment.tz.setDefault("Europe/Madrid");
 //let date = moment().tz("America/Toronto");
@@ -21,7 +20,8 @@ import { ProgramacionModel, IProgramacion, ITimeUTC } from '../models/programaci
 //https://dev.to/elasticrash/nodejs-singleton-injector-24n5
 class Pulpo { 
 
-    public constructor(){
+    public constructor(/* arrParams */){
+        //this.initMongooseModels();
     }
 
     public timeUTC() : ITimeUTC {
@@ -50,10 +50,7 @@ class Pulpo {
     }
 
     public async saveEstado(objCreate: IEstadoInput) : Promise<IEstado> {
-        let db = dbInstance();
-        console.log(db);
-        //return await EstadoModel.create(objCreate);
-        return await db?.models.Pulpo.create(objCreate);
+        return await EstadoModel.create(objCreate);
     }
 
     public async saveLectura(objCreate: ILecturaInput) : Promise<ILectura> {

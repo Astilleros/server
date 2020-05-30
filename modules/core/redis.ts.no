@@ -1,0 +1,14 @@
+
+// CAMBIO POR core/mngCACHE OOOOO en futura clase core/reddis con params arrService_ModParams, que cargue el cliente en este singleton object with dependencies.
+let inicializaReddis = () : redis.RedisClient =>{
+    const client = redis.createClient(
+        objConfig.arrConfig_RedisServer.intPort,
+        objConfig.arrConfig_RedisServer.strHost
+      );
+ 
+    client.on("error", function(error) {
+      console.error(error);
+    });
+
+    return client;
+}
