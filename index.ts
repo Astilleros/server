@@ -1,104 +1,78 @@
-import objConfig from './config/config';
+import cfg from './config/config';
 
-import mongoose from 'mongoose';
-import redis from 'redis';
+import {initMongoose, IMongoose} from './modules/core/mongoose';
+
+//import {initRedis} from './modules/core/redis';
+
+import {mngPulpo} from './modules/pulpo/class/pulpo.class'
 
 import express from 'express';
-import { Routes } from './routes/index.router';
+import { initRoutes } from './routes/index.router';
 
 import http from 'http';
 
 
-// en futura clase core/mongoose con params arrService_ModParams, que cargue el cliente en este singleton object with dependencies.
-let initMongoose = async () : Promise<mongoose.Mongoose> => {
+interface I$ {
 
-    let objMongoose : mongoose.Mongoose = await mongoose.connect(objConfig.arrConfig_Mongodb.strConnection, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+    cfg: any,
+    //  ----------
+    app: express.Application | undefined,
+    //  ----------
+    db: IMongoose | undefined,
+    //  ----------
+    redis: any | undefined,
+    //  ----------
+    pulpo: mngPulpo | undefined,
 
-    objMongoose.set('useCreateIndex', true);
+}
 
-    objMongoose.connection.on('connected', function() {
-        console.log("[Service] - Connected to MongoDB server.\n");
-    });
-    objMongoose.connection.on('error', function( err: any ) {
-        console.log("[Service] - Error on MongoDB connection.");
-        console.log( err );
-        process.exit(0);
-    } );
+var $: I$ = {
 
-    objMongoose.connection.on('disconnected', function() {
-        console.log("[Service] - Disconnected from MongoDB server.\n");
-        process.exit(0);
-    } );
+    cfg: cfg,
+    //  ----------
+    app: undefined,
+    //  ----------
+    db: undefined,
+    //  ----------
+    redis: undefined,
+    //  ----------
+    pulpo: undefined,
 
-
-    // initSchema() => carga de todos los modelos e interfaces "fuera de las clases".
-
-    return objMongoose;
 };
 
-// CAMBIO POR core/mngCACHE OOOOO en futura clase core/reddis con params arrService_ModParams, que cargue el cliente en este singleton object with dependencies.
-let inicializaReddis = () : redis.RedisClient =>{
-    const client = redis.createClient(
-        objConfig.arrConfig_RedisServer.intPort,
-        objConfig.arrConfig_RedisServer.strHost
-      );
- 
-    client.on("error", function(error) {
-      console.error(error);
-    });
 
-    return client;
-}
 
-// en futura clase core/express con params arrService_ModParams, que cargue la app en este singleton object with dependencies.
-let initExpressApp = () : express.Application =>{
+// CARGAMOS CORE SINGLE = $$$$$$$$$$$$$$$$$$$$
+(async ()=>{
 
-    const app  : express.Application = express();
+    // INIT DB
+    $.db = await initMongoose($);
 
-    app.set('port', objConfig.arrConfig_WebService.intHttpPort);
+    // INICIAMOS REDDIS
+    //$.redis = await inicializaReddis();
+
+
+    // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
+    $.pulpo = new mngPulpo($);
+
+
+    // INICIAMOS APP EXPRESS
+    $.app = express();
+
+    $.app.set('port', $.cfg.http.port);
 
     // MIDDLEWARES
-    app.use(express.json());
+    $.app.use(express.json());
 
     // ROUTERS
-    Routes(app);
+    initRoutes($);
 
-    return app;
-}
 
-let initHttp = () =>{
+    //SERVER
+    let server = http.createServer($.app);
 
-    let server = http.createServer(arrService_ModParams.objExpress);
-
-    server.listen(objConfig.arrConfig_WebService.intHttpPort);
+    server.listen($.cfg.http.port);
     server.on('error', () => console.log('error server http.'));
     server.on('listening', () => console.log('escuchando...'));
 
-    return server;
-}
-
-var arrService_ModParams: any = {
-    //  ----------
-    objExpress: undefined,
-    //  ----------
-    objMongoose: undefined,
-    //  ----------
-    objClientReddis: undefined,
-    //  ----------
-    arrCore: {},
-    arrModel: {},
-    arrServices: {},
-};
-
-
-
-// MAIN
-(async ()=>{
-    arrService_ModParams.objMongoose = await initMongoose();
-    //arrService_ModParams.objClientReddis = await inicializaReddis();
-    arrService_ModParams.objExpress = initExpressApp();
-    var serverHttp = initHttp();
 })()

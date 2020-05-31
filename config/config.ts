@@ -1,30 +1,24 @@
 export default 
 
 {
-    arrConfig_WebService: {
-        intHttpPort: 3001,
-        intHttpsPort: 3002,
+    http: {
+        port: 3001,
+    },
+    
+    https: {
+        port: 3002,
     },
   
-    arrConfig_Mongodb: {
-    	strConnection: "mongodb://localhost/agrobot",
-        arrOptions: {
+    mongodb: {
+    	uri: "mongodb://localhost/agrobot",
+        options: {
             useNewUrlParser: true,
             useUnifiedTopology: true
         }
     },
-    arrConfig_RedisServer: {
-        strHost: 'localhost',
-        intPort: 6379,
-        intTtl: 86400,
-    },
-    arrConfig_Session: {
-        secret: 'ThisIsHowYouUseRedisSessionStorage',
-        name: '_redisPractice',
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
-            secure: true,
-        }
+    redis: {
+        host: 'localhost',
+        port: 6379,
+        ttl: 86400,
     },
 };
