@@ -30,7 +30,6 @@ var $ = {
     //  ----------
     pulpo: undefined,
 };
-// CARGAMOS CORE SINGLE = $$$$$$$$$$$$$$$$$$$$
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // INIT DB
     $.db = yield mongoose_1.initMongoose($);
@@ -50,4 +49,5 @@ var $ = {
     server.listen($.cfg.http.port);
     server.on('error', () => console.log('error server http.'));
     server.on('listening', () => console.log('escuchando...'));
+    console.log($.db);
 }))();

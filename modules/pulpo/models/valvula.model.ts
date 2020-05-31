@@ -1,25 +1,22 @@
-import { Document, Model, model, Types, Schema, Query } from "mongoose";
+import { Document, Model, model, Schema } from "mongoose";
 
 
-interface IValvula extends Document {
+export interface IValvula extends Document {
     name: string
 };
 
 
-let objSchema: Schema<IValvula> = new Schema<IValvula>({
-    name: String
-},{
-    timestamps: true,
-    autoIndex: true,
-});
+export function initValvula($: any ) {
 
 
-let objModel : Model<IValvula> = model<IValvula>('Valvula', objSchema);
+	let objSchema: Schema<IValvula> = new Schema<IValvula>({
+		name: String
+	},{
+		timestamps: true,
+		autoIndex: true,
+	});
 
-export {
-	//models
-	objModel as ValvulaModel,
-	objSchema as ValvulaSchema,
-	//interfaces
-	IValvula as IValvula
+
+	let objModel : Model<IValvula> = model<IValvula>('Valvula', objSchema);
+
 }

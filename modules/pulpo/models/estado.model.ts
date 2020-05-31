@@ -12,16 +12,6 @@ export interface IEstado extends Document {
     refPulpo: IPulpo['_id']
 };
 
-export interface IEstadoInput {
-    reboot: boolean,
-    batery: number,
-    signal: number,
-    presion: number,
-    temperatura: number,
-    humedad: number,
-    refPulpo: IPulpo['_id']
-};
-
 
 export function initEstado(params: any ) {
 

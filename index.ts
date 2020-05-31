@@ -41,8 +41,6 @@ var $: I$ = {
 };
 
 
-
-// CARGAMOS CORE SINGLE = $$$$$$$$$$$$$$$$$$$$
 (async ()=>{
 
     // INIT DB
@@ -50,7 +48,6 @@ var $: I$ = {
 
     // INICIAMOS REDDIS
     //$.redis = await inicializaReddis();
-
 
     // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
     $.pulpo = new mngPulpo($);
@@ -75,4 +72,6 @@ var $: I$ = {
     server.on('error', () => console.log('error server http.'));
     server.on('listening', () => console.log('escuchando...'));
 
+
+    console.log($.db);
 })()

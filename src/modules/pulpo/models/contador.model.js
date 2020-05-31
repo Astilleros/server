@@ -9,48 +9,48 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContadorSchema = exports.ContadorModel = void 0;
+exports.initContador = void 0;
 const mongoose_1 = require("mongoose");
-const lectura_model_1 = require("./lectura.model");
 ;
 ;
-let objSchema = new mongoose_1.Schema({
-    name: String
-}, {
-    timestamps: true,
-    autoIndex: true,
-});
-exports.ContadorSchema = objSchema;
-//Middlewares mongoose
-objSchema.pre('deleteOne', true, function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        const objToDel = this;
-        yield lectura_model_1.LecturaModel.deleteMany({ refContador: objToDel._id });
+function initContador($) {
+    let objSchema = new mongoose_1.Schema({
+        name: String
+    }, {
+        timestamps: true,
+        autoIndex: true,
     });
-});
-objSchema.pre('remove', function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        const objToDel = this;
-        yield lectura_model_1.LecturaModel.deleteMany({ refContador: objToDel._id });
+    //Middlewares mongoose
+    objSchema.pre('deleteOne', true, function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const objToDel = this;
+            yield $.db.models.Lectura.deleteMany({ refContador: objToDel._id });
+        });
     });
-});
-objSchema.pre('deleteOne', false, function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        const filtro = this.getQuery();
-        const objToDel = yield this.model.findOne(filtro);
-        if (objToDel != null) {
-            yield lectura_model_1.LecturaModel.deleteMany({ refContador: objToDel._id });
-        }
+    objSchema.pre('remove', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const objToDel = this;
+            yield $.db.models.Lectura.deleteMany({ refContador: objToDel._id });
+        });
     });
-});
-objSchema.pre('deleteMany', function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        const filtro = this.getQuery();
-        const arrObjToDel = yield this.model.find(filtro);
-        for (let objToDel of arrObjToDel) {
-            yield lectura_model_1.LecturaModel.deleteMany({ refContador: objToDel._id });
-        }
+    objSchema.pre('deleteOne', false, function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filtro = this.getQuery();
+            const objToDel = yield this.model.findOne(filtro);
+            if (objToDel != null) {
+                yield $.db.models.Lectura.deleteMany({ refContador: objToDel._id });
+            }
+        });
     });
-});
-let objModel = mongoose_1.model('Contador', objSchema);
-exports.ContadorModel = objModel;
+    objSchema.pre('deleteMany', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filtro = this.getQuery();
+            const arrObjToDel = yield this.model.find(filtro);
+            for (let objToDel of arrObjToDel) {
+                yield $.db.models.Lectura.deleteMany({ refContador: objToDel._id });
+            }
+        });
+    });
+    let objModel = mongoose_1.model('Contador', objSchema);
+}
+exports.initContador = initContador;
