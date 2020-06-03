@@ -51,33 +51,42 @@ var $: I$ = {
 
 (async ()=>{
 
-    // INIT DB
-    $.db = await initMongoose($);
+    await (async ()=>{
 
-    // INICIAMOS REDDIS
-    $.redis = await initRedisClient($);
+        // INIT DB
+        $.db = await initMongoose($);
 
-    // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
-    $.pulpo = new mngPulpo($);
+        // INICIAMOS REDDIS
+        $.redis = await initRedisClient($);
 
-    $.gfs = new mngGFS($);
+        // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
+        $.pulpo = new mngPulpo($);
 
-
-    // INICIAMOS APP EXPRESS
-    $.app = express();
-    $.app.set('port', $.cfg.http.port);
-    // MIDDLEWARES
-    $.app.use(express.json());
-    // ROUTERS
-    initRoutes($);
+        // INIT MNG MONGO FILES
+        $.gfs = new mngGFS($);
 
 
-    //SERVER
-    let server = http.createServer($.app);
-    server.listen($.cfg.http.port);
-    server.on('error', () => console.log('error server http.'));
-    server.on('listening', () => console.log('escuchando...'));
+        // INICIAMOS APP EXPRESS
+        $.app = express();
+        $.app.set('port', $.cfg.http.port);
+        // MIDDLEWARES
+        $.app.use(express.json());
+        // ROUTERS
+        initRoutes($);
 
 
-    console.log($.db);
+        //SERVER
+        let server = http.createServer($.app);
+        server.listen($.cfg.http.port);
+        server.on('error', () => console.log('error server http.'));
+        server.on('listening', () => console.log('escuchando...'));
+    })();
+    
+    setTimeout( () => {
+        if($.gfs)
+            $.gfs.pruebas();
+        if($.db)
+            console.log($.db.models)
+    }, 3000);
+
 })()

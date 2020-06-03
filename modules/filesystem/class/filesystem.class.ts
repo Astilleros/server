@@ -219,7 +219,7 @@ export class mngGFS {
         // ---- Change father reference -----
         // --------------------------------------------------------
         
-        return await tadFSFile.updateOne({
+        return await tadFSFile.findOneAndUpdate({
                 refParentDir: objIniParentPath._id,
                 strName: strIniFileName
             },
@@ -444,6 +444,39 @@ export class mngGFS {
             child_files: arrFil
         };
     }
+
+        //pruebas
+    async pruebas() {
+            console.log("Start main moduleToTest");
+            console.log("Path op.");
+            let ruta = "/Dir1/Dir2/Dir3/file.txt";
+            console.log( ruta );
+            let ruta_exp = this.$.gfs.getExplodedPath( ruta );
+            console.log( ruta_exp );
+            console.log( this.$.gfs.getImplodedPath( ruta_exp ));
+            console.log(this.$.gfs.getFileNameFromPath(ruta));
+            let ruta_parent = this.$.gfs.getParentPath(ruta);
+            //console.log(ruta_parent);
+        
+            console.log("Directory create/delete.");
+            await this.$.gfs.mkdir(ruta_parent, true);
+            await this.$.gfs.rmdir("/Dir1/Dir2");
+            await this.$.gfs.mkdir('/Dir1/Dir2-2', false);
+            await this.$.gfs.mkdir('/Dir1/Dir2-3/Diiir', true);
+            
+            console.log("File add/get/mv.");
+            await this.$.gfs.addFile( "/Dir1/", "codigos_guia/store/file.txt", true );
+            await this.$.gfs.mvFile("/Dir1/file.txt", "/Dir1/Dir2-2");
+            /*
+            console.log(await this.$.gfs.getFileToString( "/Dir1/Dir2-2/passwd"));
+            await this.$.gfs.getFileToLocal( "/Dir1/Dir2-2/passwd", "asq.txt" );
+        
+            console.log("Directory get.");
+            console.log( await this.$.gfs.getDirFromPath( "/Dir1/Dir2-2", false ) );
+            console.log(await this.$.gfs.getDirContent('/Dir1'));
+            console.log(JSON.stringify(await this.$.gfs.getDirTree('/Dir1'), null, 2));
+            */
+    }
   
 }
 
@@ -483,5 +516,3 @@ setTimeout( async function() {
 
 }, 2000);
 */
-
-      

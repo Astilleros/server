@@ -22,7 +22,7 @@ export function initFSDirectory( $: any ) {
     
       
     // Mongoose middleware - Cascade delete
-    objSchema.pre<IFSDirectory>('remove', true,  async function() {
+    objSchema.pre<IFSDirectory>('remove',  async function() {
         const objToDel = this;
         // 1-Borrar documentos ajenos con referencia al propio en un campo.
         await $.db.models.FSDirectory.deleteMany({ refParentDir: objToDel._id });
@@ -30,9 +30,10 @@ export function initFSDirectory( $: any ) {
         await $.db.models.FSFile.deleteMany({ refParentDir: objToDel._id });
     });
 
-    objSchema.pre< Query<IFSDirectory> & { model: Model<IFSDirectory> } >('remove', false, async function() {
-        const filtro = this.getQuery();
-        const objToDel : IFSDirectory | null  = await this.model.findOne(filtro);
+    objSchema.pre< any & Query<IFSDirectory> >('remove', async function() {
+        console.log(this)
+        const filtro = this._conditions;
+        const objToDel : IFSDirectory | null  = await $.db.models.FSDirectory.findOne(filtro);
         if(objToDel){
             // 1-Borrar documentos ajenos con referencia al propio en un campo.
             await $.db.models.FSDirectory.deleteMany({ refParentDir: objToDel._id });
@@ -49,9 +50,9 @@ export function initFSDirectory( $: any ) {
         await $.db.models.FSFile.deleteMany({ refParentDir: objToDel._id });
     });
 
-    objSchema.pre< Query<IFSDirectory> & { model: Model<IFSDirectory> } >('deleteOne', false, async function() {
+    objSchema.pre< any >('deleteOne', false, async function() {
         const filtro = this.getQuery();
-        const objToDel : IFSDirectory | null = await this.model.findOne(filtro);
+        const objToDel : IFSDirectory | null = await $.db.models.FSDirectory.findOne(filtro);
         if(objToDel){
             // 1-Borrar documentos ajenos con referencia al propio en un campo.
             await $.db.models.FSDirectory.deleteMany({ refParentDir: objToDel._id });
@@ -61,7 +62,7 @@ export function initFSDirectory( $: any ) {
         } 
     });
     
-    objSchema.pre< Query<IFSDirectory> & { model: Model<IFSDirectory> } >('deleteMany', async function() {
+    objSchema.pre< any >('deleteMany', async function() {
         const filtro = this.getQuery();
         const arrObjToDel = await this.model.find(filtro);
         for(let objToDel of arrObjToDel){

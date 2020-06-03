@@ -5,7 +5,7 @@ export interface IFSFile extends Document {
         strName: String,
         strContentType: String,
         refParentDir: IFSDirectory['_id'],
-        refGridFSFile: any
+        refGridFSFile: Types.ObjectId
 };
 
 
@@ -15,11 +15,11 @@ export function initFSFile( $: any ) {
         strName: String,
         strContentType: String,
         refParentDir: {
-            type: Schema.Types.ObjectId,
+            type: $.db.Schema.Types.ObjectId,
             ref: 'FSDirectory',
         },
         refGridFSFile: {
-            type: $.db.Types.ObjectId,
+            type: $.db.Schema.Types.ObjectId,
             ref: 'GridFSFile',
         },
     },{
@@ -71,4 +71,8 @@ export function initFSFile( $: any ) {
             await $.db.models.GridFSFile.unlink( { _id: objToDel.refGridFSFile }, () => {} );
         }
     });
+
+
+	let objModel : Model<IFSFile> = model<IFSFile>('FSFile', objSchema);
+
 }

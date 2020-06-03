@@ -34,24 +34,32 @@ var $ = {
     gfs: undefined,
 };
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    // INIT DB
-    $.db = yield mongoose_1.initMongoose($);
-    // INICIAMOS REDDIS
-    $.redis = yield redis_1.initRedisClient($);
-    // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
-    $.pulpo = new pulpo_class_1.mngPulpo($);
-    $.gfs = new filesystem_class_1.mngGFS($);
-    // INICIAMOS APP EXPRESS
-    $.app = express_1.default();
-    $.app.set('port', $.cfg.http.port);
-    // MIDDLEWARES
-    $.app.use(express_1.default.json());
-    // ROUTERS
-    index_router_1.initRoutes($);
-    //SERVER
-    let server = http_1.default.createServer($.app);
-    server.listen($.cfg.http.port);
-    server.on('error', () => console.log('error server http.'));
-    server.on('listening', () => console.log('escuchando...'));
-    console.log($.db);
+    yield (() => __awaiter(void 0, void 0, void 0, function* () {
+        // INIT DB
+        $.db = yield mongoose_1.initMongoose($);
+        // INICIAMOS REDDIS
+        $.redis = yield redis_1.initRedisClient($);
+        // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
+        $.pulpo = new pulpo_class_1.mngPulpo($);
+        // INIT MNG MONGO FILES
+        $.gfs = new filesystem_class_1.mngGFS($);
+        // INICIAMOS APP EXPRESS
+        $.app = express_1.default();
+        $.app.set('port', $.cfg.http.port);
+        // MIDDLEWARES
+        $.app.use(express_1.default.json());
+        // ROUTERS
+        index_router_1.initRoutes($);
+        //SERVER
+        let server = http_1.default.createServer($.app);
+        server.listen($.cfg.http.port);
+        server.on('error', () => console.log('error server http.'));
+        server.on('listening', () => console.log('escuchando...'));
+    }))();
+    setTimeout(() => {
+        if ($.gfs)
+            $.gfs.pruebas();
+        if ($.db)
+            console.log($.db.models);
+    }, 3000);
 }))();
