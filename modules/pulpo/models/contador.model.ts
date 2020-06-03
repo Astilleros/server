@@ -5,7 +5,7 @@ export interface IContador extends Document {
 };
 
 export interface IContadorInput {
-    name: string
+    name: string 
 };
 
 
@@ -33,7 +33,7 @@ export function initContador( $: any ) {
 	objSchema.pre< Query<IContador> & { model: Model<IContador> } >('deleteOne', false, async function() {
 		const filtro = this.getQuery();
 		const objToDel = await this.model.findOne(filtro);
-		if(objToDel != null){
+		if(objToDel){
 			await $.db.models.Lectura.deleteMany({ refContador: objToDel._id });
 		}
 	});

@@ -37,7 +37,7 @@ function initContador($) {
         return __awaiter(this, void 0, void 0, function* () {
             const filtro = this.getQuery();
             const objToDel = yield this.model.findOne(filtro);
-            if (objToDel != null) {
+            if (objToDel) {
                 yield $.db.models.Lectura.deleteMany({ refContador: objToDel._id });
             }
         });

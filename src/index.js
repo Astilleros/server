@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("./config/config"));
 const mongoose_1 = require("./modules/core/mongoose");
-//import {initRedis} from './modules/core/redis';
+const redis_1 = require("./modules/core/redis");
 const pulpo_class_1 = require("./modules/pulpo/class/pulpo.class");
+const filesystem_class_1 = require("./modules/filesystem/class/filesystem.class");
 const express_1 = __importDefault(require("express"));
 const index_router_1 = require("./routes/index.router");
 const http_1 = __importDefault(require("http"));
@@ -29,14 +30,17 @@ var $ = {
     redis: undefined,
     //  ----------
     pulpo: undefined,
+    //  ----------
+    gfs: undefined,
 };
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // INIT DB
     $.db = yield mongoose_1.initMongoose($);
     // INICIAMOS REDDIS
-    //$.redis = await inicializaReddis();
+    $.redis = yield redis_1.initRedisClient($);
     // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
     $.pulpo = new pulpo_class_1.mngPulpo($);
+    $.gfs = new filesystem_class_1.mngGFS($);
     // INICIAMOS APP EXPRESS
     $.app = express_1.default();
     $.app.set('port', $.cfg.http.port);
