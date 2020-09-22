@@ -17,4 +17,4 @@ let dbConnect = new Promise(function(resolve, reject) {
 
 
 
-export { dbConnect };
+export { dbConnect, mongoose };

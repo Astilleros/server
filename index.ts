@@ -1,27 +1,26 @@
-import cfg from './config/config';
-import * as core from './modules/core/index';
-import http from 'http';
+import cfg from './config/config'
+import { dbConnect, cacheConnect, express } from './modules/core'
+import http from 'http'
 
+
+// INIT MODULES
+import './modules/models'
 
 (async ()=>{
 
     // INIT MONGODB
-    let mongoose = await core.dbConnect;
-    // INIT REDIS
-    let redis = await core.cacheConnect;
+    await dbConnect
 
-    //console.log(util.inspect(core, { getters: true }));
-    //console.log(util.inspect(core.dbConnect, { getters: true }));
-    //console.log(util.inspect(core.cacheConnect, { getters: true }));
-    //console.log(util.inspect(core.express, { getters: true }));
+    // INIT REDIS
+    await cacheConnect
 
     //SERVER
-    let server = http.createServer(core.express);
+    let server = http.createServer(express)
 
-    server.listen(cfg.http.port);
-    server.on('error', ( error ) => console.log('Error server http.', error));
+    server.listen(cfg.http.port)
+    server.on('error', ( error ) => console.log('Error server http.', error))
     server.on('listening', () => {
-        console.log('Servidor http iniciado.');
+        console.log('Servidor http iniciado en puerto: ' + cfg.http.port)
     });  
 
 })()

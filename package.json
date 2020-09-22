@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Servidor para casetas y arquetas.",
   "scripts": {
-    "start": "node ./build/index.bundle",
+    "start": "node ./src/index",
     "build": "tsc",
-    "bundle": "npx webpack-cli",
-    "dev": "tsc && npx webpack-cli && node ./build/index.bundle"
+    "dev": "tsc && node ./src/index",
+    "bundle": "tsc && npx webpack-cli && node ./build/index.bundle"
   },
   "repository": {
     "type": "git",
