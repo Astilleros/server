@@ -1,78 +1,29 @@
 import cfg from './config/config';
-
-import {initMongoose, IMongoose} from './modules/core/mongoose';
-
-//import {initRedis} from './modules/core/redis';
-
-import {mngPulpo} from './modules/pulpo/class/pulpo.class'
-
+import * as core from './modules/core/index';
 import express from 'express';
-import { initRoutes } from './routes/index.router';
-
 import http from 'http';
+import util from 'util';
 
 
-interface I$ {
-
-    cfg: any,
-    //  ----------
-    app: express.Application | undefined,
-    //  ----------
-    db: IMongoose | undefined,
-    //  ----------
-    redis: any | undefined,
-    //  ----------
-    pulpo: mngPulpo | undefined,
-
-}
-
-var $: I$ = {
-
-    cfg: cfg,
-    //  ----------
-    app: undefined,
-    //  ----------
-    db: undefined,
-    //  ----------
-    redis: undefined,
-    //  ----------
-    pulpo: undefined,
-
-};
-
-
-
-// CARGAMOS CORE SINGLE = $$$$$$$$$$$$$$$$$$$$
 (async ()=>{
 
-    // INIT DB
-    $.db = await initMongoose($);
+    // INIT MONGODB
+    let mongoose = await core.dbConnect;
+    // INIT REDIS
+    let redis = await core.cacheConnect;
 
-    // INICIAMOS REDDIS
-    //$.redis = await inicializaReddis();
-
-
-    // INIT MNGPULPO CLASS - CON MONGOOSE Y REDIS DB
-    $.pulpo = new mngPulpo($);
-
-
-    // INICIAMOS APP EXPRESS
-    $.app = express();
-
-    $.app.set('port', $.cfg.http.port);
-
-    // MIDDLEWARES
-    $.app.use(express.json());
-
-    // ROUTERS
-    initRoutes($);
-
+    //console.log(util.inspect(core, { getters: true }));
+    //console.log(util.inspect(core.dbConnect, { getters: true }));
+    //console.log(util.inspect(core.cacheConnect, { getters: true }));
+    //console.log(util.inspect(core.express, { getters: true }));
 
     //SERVER
-    let server = http.createServer($.app);
+    let server = http.createServer(core.express);
 
-    server.listen($.cfg.http.port);
-    server.on('error', () => console.log('error server http.'));
-    server.on('listening', () => console.log('escuchando...'));
+    server.listen(cfg.http.port);
+    server.on('error', ( error ) => console.log('Error server http.', error));
+    server.on('listening', () => {
+        console.log('Servidor http iniciado.');
+    });  
 
 })()

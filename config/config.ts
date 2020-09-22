@@ -10,7 +10,7 @@ export default
     },
   
     mongodb: {
-    	uri: "mongodb://localhost/agrobot",
+    	uri: "mongodb://localhost/horus",
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true

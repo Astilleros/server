@@ -8,7 +8,7 @@ exports.default = {
         port: 3002,
     },
     mongodb: {
-        uri: "mongodb://localhost/agrobot",
+        uri: "mongodb://localhost/horus",
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true

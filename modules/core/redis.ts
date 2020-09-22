@@ -1,17 +1,25 @@
 import redis from 'redis';
+import cfg from '../../config/config'
 
-export let initRedis = ($: any) =>{
-    const client = redis.createClient(
-        $.cfg.redis.port,
-        $.cfg.redis.host
+
+
+let cacheConnect = new Promise(function(resolve, reject) { 
+
+    let client = redis.createClient(
+        cfg.redis.port,
+        cfg.redis.host
       );
- 
+
     client.on("error", function(error) {
-      console.error(error);
+        console.error('Error conectando a redis.', error);
+        reject(false);
     });
 
     client.on('ready', () => {
-    	$.redis = client;
+        console.error('Éxito conectando a redis.');
+        resolve(client);
     });
 
-}
+ } );
+
+export { cacheConnect };

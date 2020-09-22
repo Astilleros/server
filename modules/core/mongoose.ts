@@ -1,11 +1,20 @@
 import mongoose from 'mongoose';
+import cfg from '../../config/config'
 
-export interface IMongoose extends mongoose.Mongoose {};
+let dbConnect = new Promise(function(resolve, reject) { 
 
-export let initMongoose = async ($ : any) : Promise<mongoose.Mongoose> => {
+	mongoose.connection.on('error', function (error) {
+		console.error('Error conectando a mongodb.', error);
+		reject(false);
+	});
+	mongoose.connection.once('open', function () {
+		console.error('Éxito conectando a mongodb.');
+		resolve(mongoose);
+	});
+	mongoose.connect(cfg.mongodb.uri, cfg.mongodb.options);
 
-    let objMongoose : mongoose.Mongoose = await mongoose.connect($.cfg.mongodb.uri, $.cfg.mongodb.options);
+ } );
 
-    return objMongoose;
 
-};
+
+export { dbConnect };

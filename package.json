@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Servidor para casetas y arquetas.",
   "scripts": {
-    "start": "node ./src/index"
+    "start": "tsc; NODE_ENV=development webpack; node ./build/index.bundle"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,10 @@
     "@types/multer": "^1.4.3",
     "@types/node": "^14.0.4",
     "@types/redis": "^2.8.22",
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "ts-loader": "^8.0.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }
