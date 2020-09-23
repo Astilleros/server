@@ -126,10 +126,10 @@ export interface IContacto extends mongoose.Document {
     iniciales: string,  
     email: string,
     descripcion: string,
-    credencial?: ICredencial,
+    refCredencial: ICredencial['_id'],
     refInmobiliaria: IInmobiliaria['_id'],
     arrGrupoContacto: [IGrupoContacto],
-    //arrRefExpediente: [IExpediente['_id']]
+    arrRefExpediente: [IExpediente['_id']]
 };
 
 let contactoSchema : mongoose.Schema = new mongoose.Schema( {
@@ -138,22 +138,163 @@ let contactoSchema : mongoose.Schema = new mongoose.Schema( {
     iniciales: String,  
     email: String,
     descripcion: String,
-    credencial: credencialSchema || null,
+    credencial: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Credencial',
+    },
     refInmobiliaria: {
         type: mongoose.Types.ObjectId,
         ref: 'Inmobiliaria',
     },
     arrGrupoContacto: [grupoContactoSchema],
-    /*
+    
     arrRefExpediente: {
         type: mongoose.Types.ObjectId,
         ref: 'Expediente',
     },
-    */
+    
 
 }, { timestamps: true, strict: true } );
 
 
 export let Contacto : mongoose.Model<IContacto> =  mongoose.model<IContacto>('Contacto', contactoSchema);
+
+//  --------------------------------
+
+
+
+//  ------ GridFSFile ------
+//  --------------------------------
+
+//import {createModel } from 'mongoose-gridfs';
+let gridFileSchema = require('gridfile')
+export let GridFile = mongoose.model('GridFile', gridFileSchema)
+
+//  --------------------------------
+
+
+
+//  ------ Folder ------
+//  --------------------------------
+
+export interface IFolder extends mongoose.Document {
+    name: string,
+    contentType: string,
+    size: number,
+    arrRefGridFile: [any]
+};
+
+let folderSchema : mongoose.Schema = new mongoose.Schema({
+    name: String,
+    contentType: String,
+    size: {
+        type: Number,
+        default: 0
+    },
+    arrRefGridFolder: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'GridFile',
+    }],
+}, {
+  timestamps: true,
+  strict: true
+});
+
+
+export let Folder : mongoose.Model<IFolder> =  mongoose.model<IFolder>('Folder', folderSchema);
+
+//  ----------------------------
+
+
+//  --------------------------------
+//  ---------- CheckList -------
+export enum EstadoCheckList {
+    pendiente,
+    solicitado,
+    proceso,
+    validado,
+}
+
+export interface ICheckList extends mongoose.Document {
+    nombre: string,
+    descripcion: string,
+    archivos: IFolder,
+    estadoAgente: EstadoCheckList,
+    estadoCoordinacion: EstadoCheckList,
+    estadoJuridico: EstadoCheckList,
+    //refChat: IChat['_id']
+};
+
+let checkListSchema : mongoose.Schema = new mongoose.Schema( {
+    nombre: String,
+    descripcion: String,
+    archivos: folderSchema,
+    estadoAgente: { 
+        type: String, 
+        enum : ['pendiente', 'solicitado', 'proceso', 'validado'], 
+        default: 'pendiente'
+    },
+    estadoCoordinacion: { 
+        type: String, 
+        enum : ['pendiente', 'solicitado', 'proceso', 'validado'], 
+        default: 'pendiente'
+    },
+    estadoJuridico: { 
+        type: String, 
+        enum : ['pendiente', 'solicitado', 'proceso', 'validado'], 
+        default: 'pendiente'
+    },
+    /*
+    refChat: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Chat',
+    },
+    */
+}, { timestamps: true, strict: true } );
+
+
+export let CheckList : mongoose.Model<ICheckList> =  mongoose.model<ICheckList>('CheckList', checkListSchema);
+
+//  --------------------------------
+
+
+
+//  --------------------------------
+//  ---------- Expediente ----------
+
+export interface IExpediente extends mongoose.Document {
+    identifcador: string,
+    direccion: string,  
+    catastro: string,
+    descripcion: string,
+    arrRefCheckList: [ICheckList],
+    arrRefAgente: [IContacto['_id']],
+    arrRefPropietario: [IContacto['_id']],
+    refInmobiliaria: IInmobiliaria['_id']
+};
+
+let expedienteSchema : mongoose.Schema = new mongoose.Schema( {
+    identifcador: String,
+    direccion: String,  
+    catastro: String,
+    descripcion: String,
+    arrRefCheckList: checkListSchema,
+    arrRefAgente: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Contacto',
+    }],
+    arrRefPropietario: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Contacto',
+    }],
+    refInmobiliaria: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Inmobiliaria',
+    }
+
+}, { timestamps: true, strict: true } );
+
+
+export let Expediente : mongoose.Model<IExpediente> =  mongoose.model<IExpediente>('Expediente', expedienteSchema);
 
 //  --------------------------------
