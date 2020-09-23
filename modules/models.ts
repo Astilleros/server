@@ -3,7 +3,6 @@ import { mongoose } from './core';
 
 //  --------------------------------
 //  -------- Inmobiliaria ----------
-
 export interface IInmobiliaria extends mongoose.Document {
     name: string,
     description: string,
@@ -17,14 +16,11 @@ let inmobiliariaSchema : mongoose.Schema = new mongoose.Schema( {
 }, { timestamps: true, strict: true } );
 
 export let Inmobiliaria : mongoose.Model<IInmobiliaria> =  mongoose.model<IInmobiliaria>('Inmobiliaria', inmobiliariaSchema);
-
 //  --------------------------------
-
 
 
 //  --------------------------------
 //  ------ Permiso -----------------
-
 export interface IPermiso extends mongoose.Document {
     nombre: string,
     descripcion: string,
@@ -36,14 +32,11 @@ let permisoSchema : mongoose.Schema = new mongoose.Schema( {
 }, { timestamps: true, strict: true } );
 
 export let Permiso : mongoose.Model<IPermiso> =  mongoose.model<IPermiso>('Permiso', permisoSchema);
-
 //  --------------------------------
-
 
 
 //  --------------------------------
 //  ---------- Rol -----------------
-
 export interface IRol extends mongoose.Document {
     nombre: string,
     descripcion: string,
@@ -57,14 +50,11 @@ let rolSchema : mongoose.Schema = new mongoose.Schema( {
 }, { timestamps: true, strict: true } );
 
 export let Rol : mongoose.Model<IRol> =  mongoose.model<IRol>('Rol', rolSchema);
-
 //  --------------------------------
-
 
 
 //  --------------------------------
 //  ---------- Credencial --------
-
 export interface ICredencial extends mongoose.Document {
     usuario: string,
     contrasena: string,
@@ -87,13 +77,11 @@ let credencialSchema : mongoose.Schema = new mongoose.Schema( {
 
 
 export let Credenciales : mongoose.Model<ICredencial> =  mongoose.model<ICredencial>('Credencial', credencialSchema);
-
 //  --------------------------------
 
 
 //  --------------------------------
 //  ---------- GrupoContacto -------
-
 export interface IGrupoContacto extends mongoose.Document {
     nombre: string,
     descripcion: string,
@@ -110,16 +98,12 @@ let grupoContactoSchema : mongoose.Schema = new mongoose.Schema( {
 
 }, { timestamps: true, strict: true } );
 
-
 export let GrupoContacto : mongoose.Model<IGrupoContacto> =  mongoose.model<IGrupoContacto>('GrupoContacto', grupoContactoSchema);
-
 //  --------------------------------
-
 
 
 //  --------------------------------
 //  ---------- Contacto ------------
-
 export interface IContacto extends mongoose.Document {
     nombre: string,
     apellidos: string,
@@ -156,32 +140,38 @@ let contactoSchema : mongoose.Schema = new mongoose.Schema( {
 
 }, { timestamps: true, strict: true } );
 
-
 export let Contacto : mongoose.Model<IContacto> =  mongoose.model<IContacto>('Contacto', contactoSchema);
-
 //  --------------------------------
 
 
-
-//  ------ GridFSFile ------
+//  ------ GridFSFile --------------
 //  --------------------------------
-
-//import {createModel } from 'mongoose-gridfs';
 let gridFileSchema = require('gridfile')
-export let GridFile = mongoose.model('GridFile', gridFileSchema)
+//import {createModel } from 'mongoose-gridfs';
 
+export interface IGridFile extends mongoose.Document {
+    _id: string,
+    length : number,
+    chunkSize : number,
+    uploadDate : Date,
+    filename : string,
+    md5 : string,
+    aliases : [],
+    upload( stream : any) : IGridFile,
+    download( stream : any) : IGridFile,
+};
+
+export let GridFile = mongoose.model<IGridFile>('GridFile', gridFileSchema)
 //  --------------------------------
 
 
-
-//  ------ Folder ------
+//  ------ Folder ------------------
 //  --------------------------------
-
 export interface IFolder extends mongoose.Document {
     name: string,
     contentType: string,
     size: number,
-    arrRefGridFile: [any]
+    arrRefGridFile: [IGridFile['_id']]
 };
 
 let folderSchema : mongoose.Schema = new mongoose.Schema({
@@ -195,19 +185,14 @@ let folderSchema : mongoose.Schema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'GridFile',
     }],
-}, {
-  timestamps: true,
-  strict: true
-});
-
+}, { timestamps: true, strict: true });
 
 export let Folder : mongoose.Model<IFolder> =  mongoose.model<IFolder>('Folder', folderSchema);
-
-//  ----------------------------
+//  --------------------------------
 
 
 //  --------------------------------
-//  ---------- CheckList -------
+//  ---------- CheckList -----------
 export enum EstadoCheckList {
     pendiente,
     solicitado,
@@ -252,16 +237,12 @@ let checkListSchema : mongoose.Schema = new mongoose.Schema( {
     */
 }, { timestamps: true, strict: true } );
 
-
 export let CheckList : mongoose.Model<ICheckList> =  mongoose.model<ICheckList>('CheckList', checkListSchema);
-
 //  --------------------------------
-
 
 
 //  --------------------------------
 //  ---------- Expediente ----------
-
 export interface IExpediente extends mongoose.Document {
     identifcador: string,
     direccion: string,  
@@ -294,7 +275,5 @@ let expedienteSchema : mongoose.Schema = new mongoose.Schema( {
 
 }, { timestamps: true, strict: true } );
 
-
 export let Expediente : mongoose.Model<IExpediente> =  mongoose.model<IExpediente>('Expediente', expedienteSchema);
-
 //  --------------------------------
