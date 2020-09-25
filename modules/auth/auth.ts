@@ -5,7 +5,7 @@ import cfg from '../../cfg'
 
 export interface Token {
     id: models.IContacto['_id'],
-    rol: models.ICredencial['rol'],
+    arrRol: models.ICredencial['arrRol'],
     arrPermiso: models.ICredencial['arrPermiso']
 }
 
@@ -37,22 +37,22 @@ class IAuth {
         }
     }
 
-    //Genera un token a traves de credenciales
+    //Genera un token a traves de credenciales: 
     // ruta: /loggin
     async getJWT( req : any, res : any ) {
 
-        let contacto : models.IContacto | null = await models.Contacto.findOne({ 'credencial.usuario' :  req.body.username })
+        let contacto : models.IContacto | null = await models.Contacto.findOne({ 'credencial.usuario' :  req.body.usuario })
 
-        if ( contacto == null || contacto.credencial.contrasena != req.body.password )
+        if ( contacto == null || contacto.credencial.contrasena != req.body.contrasena )
             res.status(401).end()
         else {
-            let tokenData : Token = {
+            let tokenPayload : Token = {
                 id: contacto._id,
-                rol: contacto.credencial.rol,
+                arrRol: contacto.credencial.arrRol,
                 arrPermiso: contacto.credencial.arrPermiso
             }
 
-            let token : string = jwt.sign( tokenData, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
+            let token : string = jwt.sign( tokenPayload, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
 
             res.status(200).json({ token })
         }
@@ -74,6 +74,7 @@ class IAuth {
     // ruta /effective/:id
     async getEffectiveJWT( req : any, res : any) {
         //Esta es la comprobacion de permisos, mirare de usar casl o modulillo propio.
+        // tipo entrada: function autoriza(['admin', 'agente'], ['usuarioEfectivo', 'P2'])
         //if( req.contacto.credencial.rol.indexOf('admin') == -1 ) {}
         //if( req.contacto.credencial.arrPermiso.indexOf('usuarioEfectivo') == -1 ) {}
         //Tambien que pida un usuario de esta inmobiliaria.
@@ -88,13 +89,13 @@ class IAuth {
 
         else {
             
-            let tokenData : Token = {
+            let tokenPayload : Token = {
                 id: effectiveContacto._id,
                 rol: effectiveContacto.credencial.rol,
                 arrPermiso: effectiveContacto.credencial.arrPermiso
             }
 
-            let token : string = jwt.sign( tokenData, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
+            let token : string = jwt.sign( tokenPayload, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
 
             res.status(200).json({ token })
 

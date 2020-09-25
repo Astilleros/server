@@ -40,13 +40,13 @@ export let Permiso : mongoose.Model<IPermiso> =  mongoose.model<IPermiso>('Permi
 export interface IRol extends mongoose.Document {
     nombre: string,
     descripcion: string,
-    arrRefPermiso:  [IPermiso],
+    arrPermiso:  [IPermiso],
 };
 
 let rolSchema : mongoose.Schema = new mongoose.Schema( {
     nombre: String,
     descripcion: String,
-    arrRefPermiso: [permisoSchema],
+    arrPermiso: [permisoSchema],
 }, { timestamps: true, strict: true } );
 
 export let Rol : mongoose.Model<IRol> =  mongoose.model<IRol>('Rol', rolSchema);
@@ -58,14 +58,14 @@ export let Rol : mongoose.Model<IRol> =  mongoose.model<IRol>('Rol', rolSchema);
 export interface ICredencial extends mongoose.Document {
     usuario: string,
     contrasena: string,
-    rol: IRol,
+    arrRol: [IRol],
     arrPermiso: [IPermiso]
 };
 
 let credencialSchema : mongoose.Schema = new mongoose.Schema( {
     usuario: String,
     contrasena: String,
-    rol: rolSchema,
+    arrRol: [rolSchema],
     arrPermiso: [permisoSchema]
 
 }, { timestamps: true, strict: true } );
