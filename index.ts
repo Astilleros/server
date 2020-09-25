@@ -1,4 +1,4 @@
-import cfg from './config/config'
+import cfg from './cfg'
 import { dbConnect, cacheConnect, express, mongoose } from './modules/core'
 import http from 'http'
 import { pruebaupdownfile } from './modules/files/file'

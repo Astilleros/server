@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import cfg from '../../config/config'
+import cfg from '../../cfg'
 
 let dbConnect = new Promise(function(resolve) { 
 

@@ -58,25 +58,20 @@ export let Rol : mongoose.Model<IRol> =  mongoose.model<IRol>('Rol', rolSchema);
 export interface ICredencial extends mongoose.Document {
     usuario: string,
     contrasena: string,
-    arrRol: [IRol],
+    rol: IRol,
     arrPermiso: [IPermiso]
-    refInmobiliaria: IInmobiliaria['_id']
 };
 
 let credencialSchema : mongoose.Schema = new mongoose.Schema( {
     usuario: String,
     contrasena: String,
-    arrRol: [rolSchema],
-    arrPermiso: [permisoSchema],
-    refInmobiliaria: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Inmobiliaria',
-    },
+    rol: rolSchema,
+    arrPermiso: [permisoSchema]
 
 }, { timestamps: true, strict: true } );
 
 
-export let Credenciales : mongoose.Model<ICredencial> =  mongoose.model<ICredencial>('Credencial', credencialSchema);
+export let Credencial : mongoose.Model<ICredencial> =  mongoose.model<ICredencial>('Credencial', credencialSchema);
 //  --------------------------------
 
 
@@ -110,7 +105,7 @@ export interface IContacto extends mongoose.Document {
     iniciales: string,  
     email: string,
     descripcion: string,
-    refCredencial: ICredencial['_id'],
+    credencial: ICredencial,
     refInmobiliaria: IInmobiliaria['_id'],
     arrGrupoContacto: [IGrupoContacto],
     arrRefExpediente: [IExpediente['_id']]
@@ -122,10 +117,7 @@ let contactoSchema : mongoose.Schema = new mongoose.Schema( {
     iniciales: String,  
     email: String,
     descripcion: String,
-    credencial: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Credencial',
-    },
+    credencial: credencialSchema,
     refInmobiliaria: {
         type: mongoose.Types.ObjectId,
         ref: 'Inmobiliaria',

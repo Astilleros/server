@@ -1,5 +1,5 @@
 import * as expressModule from 'express';
-import cfg  from '../../config/config'
+import cfg  from '../../cfg'
 
 // INICIAMOS APP EXPRESS
 let express : expressModule.Application = expressModule.default();
