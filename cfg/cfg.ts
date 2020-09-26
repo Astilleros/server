@@ -24,7 +24,7 @@ export default
     },
     
     jwt: {
-        key: 'CLLLAAAAAAAVESECRETA1235d7',
+        key: 'CLLLAAAAAAAVESECRET3A1235d7',
         tokenExpireTime: '1h',
     }
 };

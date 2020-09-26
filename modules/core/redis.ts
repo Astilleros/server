@@ -1,5 +1,5 @@
 import * as redisModule from 'redis';
-import cfg from '../../cfg'
+import cfg from '../../cfg/cfg'
 
 let redis : redisModule.RedisClient;
 

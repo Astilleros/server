@@ -1,13 +1,20 @@
-import * as expressModule from 'express';
-import cfg  from '../../cfg'
+import * as express from 'express';
+import cfg  from '../../cfg/cfg'
 
 // INICIAMOS APP EXPRESS
-let express : expressModule.Application = expressModule.default();
+let app : express.Application = express.default();
 
-express.set('port', cfg.http.port);
+app.set('port', cfg.http.port);
 
 // MIDDLEWARES
-express.use(expressModule.json());
+app.use(express.json());
+
+app.get('/', (req:any, res, any) => {
+    res.json({
+        app: 'Horus v2',
+        status: 'Ok'
+    })
+})
 
 
-export { express };
+export { app };
