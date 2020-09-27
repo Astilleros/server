@@ -1,7 +1,7 @@
 {
-  "name": "agrobot",
+  "name": "horus",
   "version": "1.0.0",
-  "description": "Servidor para casetas y arquetas.",
+  "description": "Servidor horus.",
   "scripts": {
     "start": "node ./src/index",
     "build": "tsc",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Astilleros/agrobot.git"
+    "url": "git+https://github.com/Astillerosserver.git"
   },
   "author": "AGM",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Astilleros/agrobot/issues"
+    "url": "https://github.com/Astilleros/server/issues"
   },
-  "homepage": "https://github.com/Astilleros/agrobot#readme",
+  "homepage": "https://github.com/Astilleros/server#readme",
   "dependencies": {
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
