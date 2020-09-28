@@ -1,7 +1,7 @@
 import cfg from './cfg/cfg'
-import { dbConnect, cacheConnect, app, auth } from './modules/core'
+import { dbConnect, cacheConnect, app, auth, mongoose } from './modules/core'
 import http from 'http'
-
+import {pruebaupdownfile} from './modules/files/file'
 
 // INIT MODULES
 import './modules/models'
@@ -23,6 +23,7 @@ import './modules/models'
     server.on('error', ( error ) => console.log('Error server http.', error))
     server.on('listening', () => {
         console.log('Servidor http iniciado en puerto: ' + cfg.http.port)
+        pruebaupdownfile()
     });  
 
 })()

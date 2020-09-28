@@ -151,12 +151,14 @@ export interface IGridFile extends mongoose.Document {
     aliases : [],
     upload( stream : any) : IGridFile,
     download( stream : any) : IGridFile,
+    getDownloadStream() : any,
+    deleteFile( _id: string) : any
 };
 
 export let GridFile = mongoose.model<IGridFile>('GridFile', gridFileSchema)
 //  --------------------------------
 
-
+/*
 //  ------ Folder ------------------
 //  --------------------------------
 export interface IFolder extends mongoose.Document {
@@ -181,7 +183,7 @@ let folderSchema : mongoose.Schema = new mongoose.Schema({
 
 export let Folder : mongoose.Model<IFolder> =  mongoose.model<IFolder>('Folder', folderSchema);
 //  --------------------------------
-
+*/
 
 //  --------------------------------
 //  ---------- CheckList -----------
@@ -195,7 +197,8 @@ export enum EstadoCheckList {
 export interface ICheckList extends mongoose.Document {
     nombre: string,
     descripcion: string,
-    archivos: IFolder,
+    //archivos: IFolder,
+    //archivos: [IGridFile['_id']],
     estadoAgente: EstadoCheckList,
     estadoCoordinacion: EstadoCheckList,
     estadoJuridico: EstadoCheckList,
@@ -205,7 +208,7 @@ export interface ICheckList extends mongoose.Document {
 let checkListSchema : mongoose.Schema = new mongoose.Schema( {
     nombre: String,
     descripcion: String,
-    archivos: folderSchema,
+    //archivos: folderSchema,
     estadoAgente: { 
         type: String, 
         enum : ['pendiente', 'solicitado', 'proceso', 'validado'], 
