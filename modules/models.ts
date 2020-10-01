@@ -20,6 +20,53 @@ export let Inmobiliaria : mongoose.Model<IInmobiliaria> =  mongoose.model<IInmob
 
 
 //  --------------------------------
+//  ---------- GrupoContacto -------
+export interface IGrupoContacto extends mongoose.Document {
+    nombre: string,
+    descripcion: string,
+    refContacto: [IContacto['_id']]
+};
+
+let grupoContactoSchema : mongoose.Schema = new mongoose.Schema( {
+    nombre: String,
+    descripcion: String,
+    refContacto: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Contacto',
+    }],
+
+}, { timestamps: true, strict: true } );
+
+export let GrupoContacto : mongoose.Model<IGrupoContacto> =  mongoose.model<IGrupoContacto>('GrupoContacto', grupoContactoSchema);
+//  --------------------------------
+
+
+//  --------------------------------
+//  ---------- Contacto ------------
+export interface IContacto extends mongoose.Document {
+    nombre: string,
+    apellidos: string,
+    iniciales: string,  
+    email: string,
+    telefono: string,
+    descripcion: string
+};
+
+let contactoSchema : mongoose.Schema = new mongoose.Schema( {
+    nombre: String,
+    apellidos: String,
+    iniciales: String,  
+    email: String,
+    telefono: String,
+    descripcion: String
+}, { timestamps: true, strict: true } );
+
+export let Contacto : mongoose.Model<IContacto> =  mongoose.model<IContacto>('Contacto', contactoSchema);
+//  --------------------------------
+
+
+
+//  --------------------------------
 //  ------ Permiso -----------------
 export interface IPermiso extends mongoose.Document {
     nombre: string,
@@ -76,34 +123,13 @@ export let Credencial : mongoose.Model<ICredencial> =  mongoose.model<ICredencia
 
 
 //  --------------------------------
-//  ---------- GrupoContacto -------
-export interface IGrupoContacto extends mongoose.Document {
-    nombre: string,
-    descripcion: string,
-    refContacto: [IContacto['_id']]
-};
-
-let grupoContactoSchema : mongoose.Schema = new mongoose.Schema( {
-    nombre: String,
-    descripcion: String,
-    refContacto: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Contacto',
-    }],
-
-}, { timestamps: true, strict: true } );
-
-export let GrupoContacto : mongoose.Model<IGrupoContacto> =  mongoose.model<IGrupoContacto>('GrupoContacto', grupoContactoSchema);
-//  --------------------------------
-
-
-//  --------------------------------
-//  ---------- Contacto ------------
-export interface IContacto extends mongoose.Document {
+//  ---------- Usuario -------------
+export interface IUsuario extends mongoose.Document {
     nombre: string,
     apellidos: string,
     iniciales: string,  
     email: string,
+    telefono: string,
     descripcion: string,
     credencial: ICredencial,
     refInmobiliaria: IInmobiliaria['_id'],
@@ -111,11 +137,12 @@ export interface IContacto extends mongoose.Document {
     arrRefExpediente: [IExpediente['_id']]
 };
 
-let contactoSchema : mongoose.Schema = new mongoose.Schema( {
+let usuarioSchema : mongoose.Schema = new mongoose.Schema( {
     nombre: String,
     apellidos: String,
     iniciales: String,  
     email: String,
+    telefono: String,
     descripcion: String,
     credencial: credencialSchema,
     refInmobiliaria: {
@@ -132,30 +159,19 @@ let contactoSchema : mongoose.Schema = new mongoose.Schema( {
 
 }, { timestamps: true, strict: true } );
 
-export let Contacto : mongoose.Model<IContacto> =  mongoose.model<IContacto>('Contacto', contactoSchema);
+export let Usuario : mongoose.Model<IUsuario> =  mongoose.model<IUsuario>('Usuario', usuarioSchema);
+
 //  --------------------------------
 
 
 //  ------ GridFSFile --------------
 //  --------------------------------
-let gridFileSchema = require('gridfile')
-//import {createModel } from 'mongoose-gridfs';
 
-export interface IGridFile extends mongoose.Document {
-    _id: string,
-    length : number,
-    chunkSize : number,
-    uploadDate : Date,
-    filename : string,
-    md5 : string,
-    aliases : [],
-    upload( stream : any) : IGridFile,
-    download( stream : any) : IGridFile,
-    getDownloadStream() : any,
-    deleteFile( _id: string) : any
-};
 
-export let GridFile = mongoose.model<IGridFile>('GridFile', gridFileSchema)
+
+//export let GridFile = mongoose.model<IGridFile>('GridFile', gridFileSchema)
+
+
 //  --------------------------------
 
 /*

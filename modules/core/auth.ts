@@ -63,6 +63,27 @@ export class mngAuth {
         }
 
     }
+    
+    async reloggin( req : any, res : any ) {
+        req.contacto.credencial.username
+        
+        let contacto : models.IContacto | null = await models.Contacto.findOne({ 'credencial.usuario' :  req.contacto.credencial.usuario })
+
+        if ( contacto == null )
+            res.status(404).end()
+        else {
+            console.log('Reloggin: ' + contacto.nombre)
+            let tokenData : tokenPayload = {
+                id: contacto._id,
+                arrRol: contacto.credencial.arrRol,
+                arrPermiso: contacto.credencial.arrPermiso
+            }
+
+            let token : string = jwt.sign( tokenData, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
+
+            res.status(200).json({ token })
+        }
+    }
 
     async getArrEfectiveContacto(req:any, res:any){
         // Esto se puede { cachear, corganizar permisos } en inmobiliarias/contactos base class por id o personalizarlo
@@ -110,26 +131,6 @@ export class mngAuth {
 
     }
 
-    async reloggin( req : any, res : any ) {
-        req.contacto.credencial.username
-        
-        let contacto : models.IContacto | null = await models.Contacto.findOne({ 'credencial.usuario' :  req.contacto.credencial.usuario })
-
-        if ( contacto == null )
-            res.status(404).end()
-        else {
-            console.log('Reloggin: ' + contacto.nombre)
-            let tokenData : tokenPayload = {
-                id: contacto._id,
-                arrRol: contacto.credencial.arrRol,
-                arrPermiso: contacto.credencial.arrPermiso
-            }
-
-            let token : string = jwt.sign( tokenData, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
-
-            res.status(200).json({ token })
-        }
-    }
 
 
 }

@@ -1,53 +1,62 @@
-import fs from 'fs'
 import { mongoose } from '../core'
-import { 
-    GridFile, IGridFile
- } from '../models'
+import fs from 'fs'
+import mime from 'mime-types'
 
 export let pruebaupdownfile = async () => {
+    let readStream = fs.createReadStream('img.png')
+    console.log(await File.addFileFromStream( 'filename', readStream ))
+    // OK
+    console.log(await File.removeFile('5f71ca30858bf81be6be07d1'))
 
-    let File = new mngFile()
-    File.removeFile('5f6bcd8e5be6622db85d6f70')
-
-    /*
-    let fileupStream = fs.createReadStream('img.png')
- 
-    let auxfile: IGridFile = new GridFile()
-
-    auxfile.filename = 'file.ext'
-    let id = await auxfile.upload(fileupStream)
-    console.log(id)
-    
-    let filedownStream = fs.createWriteStream('img235.png')
-    let auxfile2 : IGridFile[] | [] = await GridFile.find({})
-    console.log(auxfile2)
-    await auxfile2[0]?.download(filedownStream)
-    */
 }
 
-//Falta cachear los getFileInfo en redis.
+
 class mngFile {
 
-    async getFileInfo( _id : string ) : Promise<IGridFile | null>{
-        return await GridFile.findOne({ _id })
+    private GridFile : any;
+
+    async initSchemas() {
+
+        let createModel =  require('mongoose-gridfs').createModel;
+
+        this.GridFile = createModel({
+            modelName: 'GridFile',
+            connection: mongoose.connection
+        });
+        
+    }
+
+    async getFileInfo( _id : string ) : Promise<any>{
+        return await this.GridFile.findOne({ _id })
     }
 
     async addFileFromStream( filename: string, readableStream: any ) {
-  
-        let file: IGridFile = new GridFile()
-        file.filename = filename
-        return await file.upload(readableStream)
+
+        let contentType = mime.lookup(filename);
+
+        return new Promise(async (resolve, reject) => {
+
+            this.GridFile.write({
+                filename,
+                contentType: contentType,
+            },
+            readableStream,
+            (error: any, objFile: any) => {
+                if(error) reject(error)
+                else resolve(objFile)
+              }
+            );
+          });
 
     }
   
     async getFileStream( _id: string ): Promise < any > {
         
-        let file = await GridFile.findOne({ _id });
-        return file?.getDownloadStream()
+        return await this.GridFile.read({ _id });
         
     }
 
-    async copyFile( id: string, filename: string ): Promise < IGridFile | null > {
+    async copyFile( id: string, filename: string ): Promise < any > {
         
         let fileStream = await this.getFileStream(id)
         return  await this.addFileFromStream( filename, fileStream )
@@ -70,15 +79,15 @@ class mngFile {
     }
   
   
-    async removeFile(_id: string): Promise < IGridFile | null > {
+    async removeFile(_id: string): Promise < any > {
 
-        return await GridFile.findOneAndDelete({ _id });
+        return await this.GridFile.unlink({ _id }, () => {});
   
     }
   
-    async renameFile( _id: string, filename : string ) : Promise< IGridFile | null> {
+    async renameFile( _id: string, filename : string ) : Promise< any> {
         
-        return await GridFile.findOneAndUpdate(
+        return await this.GridFile.findOneAndUpdate(
             { _id }, 
             { filename }, 
             {
@@ -91,3 +100,4 @@ class mngFile {
 
 }
   
+export let File : mngFile =  new mngFile()
