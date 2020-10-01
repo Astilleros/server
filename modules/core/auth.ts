@@ -19,8 +19,8 @@ export class mngAuth {
     initRoutes () {
         app.get('/loggin', this.loggin)
         app.get('/reloggin', this.authMiddleware, this.reloggin)
-        app.get('/effective', this.authMiddleware, this.getArrEfectiveContacto)
-        app.get('/effective/:effectiveContacto', this.authMiddleware, this.getEffectiveContactoJWT)
+        app.get('/effective', this.authMiddleware, this.getArrEfectiveUsuario)
+        app.get('/effective/:effectiveUsuario', this.authMiddleware, this.getEffectiveUsuarioJWT)
     }
 
     async authMiddleware( req : any, res : any, next : any ) {
@@ -37,7 +37,7 @@ export class mngAuth {
                 //clockTimestamp: the time in seconds that should be used as the current time for all necessary comparisons.
                 let decoded : any = jwt.verify(token, cfg.jwt.key);
                 // Aqui va una llamada al Contacto.finById Cacheado.
-                req.contacto = await models.Contacto.findOne({ _id: decoded.id }, '-credencial.contrasena')
+                req.usuario = await models.Usuario.findOne({ _id: decoded.id }, '-credencial.contrasena')
                 next()
             } catch(err) {
                 res.status(401).end("Invalid JWT.")
@@ -46,15 +46,15 @@ export class mngAuth {
     }
 
     async loggin( req : any, res : any ) {
-        let contacto : models.IContacto | null = await models.Contacto.findOne({ 'credencial.usuario' :  req.body.usuario })
-        if ( contacto == null || contacto.credencial.contrasena != req.body.contrasena )
+        let usuario : models.IUsuario | null = await models.Usuario.findOne({ 'credencial.usuario' :  req.body.usuario })
+        if ( usuario == null || usuario.credencial.contrasena != req.body.contrasena )
             res.status(401).end()
         else {
-            console.log('Loggin: ' + contacto.nombre)
+            console.log('Loggin: ' + usuario.nombre)
             let tokenPayload : tokenPayload = {
-                id: contacto._id,
-                arrRol: contacto.credencial.arrRol,
-                arrPermiso: contacto.credencial.arrPermiso
+                id: usuario._id,
+                arrRol: usuario.credencial.arrRol,
+                arrPermiso: usuario.credencial.arrPermiso
             }
 
             let token : string = jwt.sign( tokenPayload, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
@@ -65,18 +65,17 @@ export class mngAuth {
     }
     
     async reloggin( req : any, res : any ) {
-        req.contacto.credencial.username
         
-        let contacto : models.IContacto | null = await models.Contacto.findOne({ 'credencial.usuario' :  req.contacto.credencial.usuario })
+        let usuario : models.IUsuario | null = await models.Usuario.findOne({ 'credencial.usuario' :  req.usuario.credencial.usuario })
 
-        if ( contacto == null )
+        if ( usuario == null )
             res.status(404).end()
         else {
-            console.log('Reloggin: ' + contacto.nombre)
+            console.log('Reloggin: ' + usuario.nombre)
             let tokenData : tokenPayload = {
-                id: contacto._id,
-                arrRol: contacto.credencial.arrRol,
-                arrPermiso: contacto.credencial.arrPermiso
+                id: usuario._id,
+                arrRol: usuario.credencial.arrRol,
+                arrPermiso: usuario.credencial.arrPermiso
             }
 
             let token : string = jwt.sign( tokenData, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
@@ -85,17 +84,17 @@ export class mngAuth {
         }
     }
 
-    async getArrEfectiveContacto(req:any, res:any){
+    async getArrEfectiveUsuario(req:any, res:any){
+        console.log(req.params)
         // Esto se puede { cachear, corganizar permisos } en inmobiliarias/contactos base class por id o personalizarlo
-        let arrEffectiveContacto : [models.IContacto] | {} = await models.Contacto.find({
-            refInmobiliaria: req.contacto.refInmobiliaria,
-            credencial : { $ne : undefined },
+        let arrEffectiveUsuario : [models.IUsuario] | {} = await models.Usuario.find({
+            refInmobiliaria: req.usuario.refInmobiliaria,
         }, '-credencial.contrasena')
-        console.log('Effective contacts for: ' + req.contacto.nombre)
-        res.json(arrEffectiveContacto)
+        console.log('Effective contacts for: ' + req.usuario.nombre)
+        res.json(arrEffectiveUsuario)
     }
 
-    async getEffectiveContactoJWT( req : any, res : any) {
+    async getEffectiveUsuarioJWT( req : any, res : any) {
         //Esta es la comprobacion de permisos, mirare de usar casl o modulillo propio.
         // tipo entrada: function autoriza(['admin', 'agente'], ['usuarioEfectivo', 'P2'])
         //if( req.contacto.credencial.rol.indexOf('admin') == -1 ) {}
@@ -104,20 +103,21 @@ export class mngAuth {
         
         try {
             // Aqui va una llamada al Contacto.finById Cacheado.
-            let effectiveContacto : models.IContacto | null = await models.Contacto.findOne({ _id: req.params.effectiveContacto })
-            if (effectiveContacto == null)
+            let effectiveUsuario : models.IUsuario | null = await models.Usuario.findOne({ 
+                _id: req.params.effectiveUsuario,
+                refInmobiliaria: req.usuario.refInmobiliaria
+            })
+            console.log(effectiveUsuario)
+            console.log(req.usuario)
+            if (effectiveUsuario == null)
                 res.status(404).end('Not found.')
-    
-            else if(effectiveContacto.refInmobiliaria != req.contacto.refInmobiliaria)
-                res.status(401).end()
-    
             else {
                 let tokenPayload : tokenPayload = {
-                    id: effectiveContacto._id,
-                    arrRol: effectiveContacto.credencial.arrRol,
-                    arrPermiso: effectiveContacto.credencial.arrPermiso
+                    id: effectiveUsuario._id,
+                    arrRol: effectiveUsuario.credencial.arrRol,
+                    arrPermiso: effectiveUsuario.credencial.arrPermiso
                 }
-                console.log('Effective loggin: ' + effectiveContacto.nombre)
+                console.log('Effective loggin: ' + effectiveUsuario.nombre)
     
                 let token : string = jwt.sign( tokenPayload, cfg.jwt.key, { expiresIn: cfg.jwt.tokenExpireTime })
     

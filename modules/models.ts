@@ -1,3 +1,4 @@
+
 import { mongoose } from './core';
 
 
@@ -160,38 +161,40 @@ let usuarioSchema : mongoose.Schema = new mongoose.Schema( {
 }, { timestamps: true, strict: true } );
 
 export let Usuario : mongoose.Model<IUsuario> =  mongoose.model<IUsuario>('Usuario', usuarioSchema);
-
-//  --------------------------------
-
-
-//  ------ GridFSFile --------------
-//  --------------------------------
-
-
-
-//export let GridFile = mongoose.model<IGridFile>('GridFile', gridFileSchema)
-
-
-//  --------------------------------
-
 /*
+let ejeCredencial : ICredencial = new Credencial({
+    usuario: "alex",
+    contrasena: "pass",
+    arrRol: [],
+    arrPermiso: []
+});
+let ejeUsuario = new Usuario({
+    nombre: "alejandro",
+    credencial: ejeCredencial,
+
+});
+ejeUsuario.save()
+console.log(ejeUsuario)
+*/
+//  --------------------------------
+
+
+
 //  ------ Folder ------------------
 //  --------------------------------
 export interface IFolder extends mongoose.Document {
     name: string,
-    contentType: string,
-    size: number,
-    arrRefGridFile: [IGridFile['_id']]
+    refExpediente: IExpediente['_id'],
+    arrRefGridFile: [any]
 };
 
 let folderSchema : mongoose.Schema = new mongoose.Schema({
     name: String,
-    contentType: String,
-    size: {
-        type: Number,
-        default: 0
+    refExpediente: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Expediente',
     },
-    arrRefGridFolder: [{
+    arrRefGridFile: [{
         type: mongoose.Types.ObjectId,
         ref: 'GridFile',
     }],
@@ -199,7 +202,7 @@ let folderSchema : mongoose.Schema = new mongoose.Schema({
 
 export let Folder : mongoose.Model<IFolder> =  mongoose.model<IFolder>('Folder', folderSchema);
 //  --------------------------------
-*/
+
 
 //  --------------------------------
 //  ---------- CheckList -----------

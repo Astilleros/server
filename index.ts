@@ -1,7 +1,8 @@
 import cfg from './cfg/cfg'
 import { dbConnect, cacheConnect, app, auth, mongoose } from './modules/core'
 import http from 'http'
-import {pruebaupdownfile, File} from './modules/files/file'
+import { File } from './modules/files/file'
+import fs from 'fs'
 
 
 (async ()=>{
@@ -10,9 +11,6 @@ import {pruebaupdownfile, File} from './modules/files/file'
     await dbConnect
     // INIT REDIS
     await cacheConnect
-
-    // INIT MODULES
-    let models = import('./modules/models')
 
     // Models
     File.initSchemas()
@@ -25,11 +23,14 @@ import {pruebaupdownfile, File} from './modules/files/file'
 
     server.listen(cfg.http.port)
     server.on('error', ( error ) => console.log('Error server http.', error))
-    server.on('listening', () => {
+    server.on('listening', async () => {
         console.log('Servidor http iniciado en puerto: ' + cfg.http.port)
         console.log(mongoose.models)
-        pruebaupdownfile()
         
+        let localFileStream = fs.createReadStream('img.png')
+        let file = await File.addFileFromStream('img.png', localFileStream)
+        console.log(file)
+        //await File.removeFile(file._id)
     });  
 
 })()
