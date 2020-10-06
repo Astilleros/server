@@ -13,7 +13,8 @@ export default
     	uri: "mongodb://localhost/horus",
         options: {
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+            useFindAndModify: false
         }
     },
 

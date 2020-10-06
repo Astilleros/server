@@ -1,8 +1,9 @@
 import cfg from './cfg/cfg'
 import { dbConnect, cacheConnect, app, auth, mongoose } from './modules/core'
 import http from 'http'
-import { File } from './modules/files/file'
+import { File } from './modules/mngFile/file'
 import fs from 'fs'
+import { pruebas } from './modules/mngExpediente/stage_prospecto'
 
 
 (async ()=>{
@@ -27,10 +28,11 @@ import fs from 'fs'
         console.log('Servidor http iniciado en puerto: ' + cfg.http.port)
         console.log(mongoose.models)
         
-        let localFileStream = fs.createReadStream('img.png')
-        let file = await File.addFileFromStream('img.png', localFileStream)
-        console.log(file)
+        //let localFileStream = fs.createReadStream('img.png')
+        //let file = await File.addFileFromStream('img.png', localFileStream)
+        //console.log(file)
         //await File.removeFile(file._id)
+        //pruebas();
     });  
 
 })()

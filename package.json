@@ -5,8 +5,7 @@
   "scripts": {
     "start": "node ./src/index",
     "build": "tsc",
-    "dev": "tsc && node ./src/index",
-    "bundle": "tsc && npx webpack-cli && node ./build/index.bundle"
+    "dev": "tsc && node ./src/index"
   },
   "repository": {
     "type": "git",
@@ -40,8 +39,6 @@
     "@types/redis": "^2.8.22",
     "nodemon": "^2.0.3",
     "ts-loader": "^8.0.2",
-    "typescript": "^3.9.7",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "typescript": "^3.9.7"
   }
 }
