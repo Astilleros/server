@@ -291,3 +291,16 @@ let expedienteSchema : mongoose.Schema = new mongoose.Schema( {
 
 export let Expediente : mongoose.Model<IExpediente> =  mongoose.model<IExpediente>('Expediente', expedienteSchema);
 //  --------------------------------
+
+export interface Plantilla {
+    texto_alarma: string
+    plantilla_envio_email: string,
+    plantilla_envio_whatsapp: string,
+    plantilla_envio_ayuda: string,
+    archivos_asociados_plantilla: IFolder
+
+}
+export interface GrupoPlantilla{
+    subgrupos: [GrupoPlantilla],
+    plantillas: [Plantilla]
+}

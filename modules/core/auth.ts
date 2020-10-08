@@ -1,5 +1,5 @@
 import { app } from '.'
-import * as models from '../models'
+import * as models from '../models_old'
 import jwt from 'jsonwebtoken'
 import cfg from '../../cfg/cfg'
 
