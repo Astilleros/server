@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { mongoose } from '../core'
+import { mongoose } from '.'
 
 //Falta cachear los getFileInfo en redis.
 class mngFile {

@@ -1,9 +1,9 @@
 import cfg from './cfg/cfg'
 import { dbConnect, cacheConnect, app, auth, mongoose } from './modules/core'
 import http from 'http'
-import { File } from './modules/mngFile/file'
+import { File } from './modules/core/filesys'
 import fs from 'fs'
-import { pruebas } from './modules/mngExpediente/stage_prospecto'
+import { pruebas } from './modules/expediente/stage_prospecto'
 
 
 (async ()=>{
